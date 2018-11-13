@@ -27,6 +27,7 @@ private:
 class Material
 {
 public:
+	Material() {}
 	typedef std::shared_ptr<Material> materialPtr;
 	Material(const aiMaterial *aiMat);
 	virtual ~Material();

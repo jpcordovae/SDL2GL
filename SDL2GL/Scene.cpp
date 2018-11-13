@@ -21,7 +21,6 @@ Scene::Scene(const char* filename)
 	recursiveLoad(scene->mRootNode, scene);
 	std::cout << "number of meshes : " << scene->mNumMeshes << std::endl;
 	aiReleaseImport(scene);
-
 }
 
 void Scene::recursiveLoad(aiNode* node, const aiScene* scene)
