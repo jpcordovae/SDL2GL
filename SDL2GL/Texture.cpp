@@ -2,6 +2,8 @@
 #include "Utils.h"
 #include <assert.h>
 
+std::map<std::string, Texture> mpTextures;
+
 //this constructor is hiden to avoid empty textures
 Texture::Texture()
 {

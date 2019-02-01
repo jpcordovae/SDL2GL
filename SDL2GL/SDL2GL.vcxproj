@@ -90,14 +90,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;GLEW_STATIC;_CONSOLE;GLM_ENABLE_EXPERIMENTAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>dev_lib\assimp-3.3.1\include;dev_lib\glew-2.1.0\include;dev_lib\SDL2-2.0.8\include;dev_lib\glm;dev_lib\SDL2_image-2.0.3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\jcordovaech\Libraries\boost_1_68_0;dev_lib\assimp-3.3.1\include;dev_lib\glew-2.1.0\include;dev_lib\SDL2-2.0.8\include;dev_lib\glm;dev_lib\SDL2_image-2.0.3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glew32sd.lib;SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;assimp-vc140-mt.lib;zlibstaticd.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>dev_lib\SDL2-2.0.8\lib\x86;dev_lib\glew-2.1.0\lib\Debug\Win32;dev_lib\assimp-3.3.1\lib\Debug;dev_lib\SDL2_image-2.0.3\VisualC\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>dev_lib\SDL2-2.0.8\lib\x86;dev_lib\glew-2.1.0\lib\Debug\Win32;dev_lib\assimp-3.3.1\lib\Debug;dev_lib\SDL2_image-2.0.3\VisualC\Win32\Debug;C:\jcordovaech\Libraries\boost_1_68_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="IPC.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Matrices.h" />
     <ClInclude Include="Mesh.h" />
@@ -178,6 +179,7 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="IPC.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Matrices.cpp" />
     <ClCompile Include="Mesh.cpp" />

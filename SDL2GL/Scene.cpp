@@ -2,15 +2,17 @@
 #include "Scene.h"
 #include <GL/glew.h>
 #include "Material.h"
+#include <functional>
 
 Scene::Scene(const char* filename)
 {
 	Assimp::Importer importer;
-	
-	const aiScene* scene = aiImportFile(filename,	aiProcess_GenSmoothNormals | 
-													aiProcess_Triangulate | 
-													aiProcess_CalcTangentSpace | 
-													aiProcess_FlipUVs);
+
+	const aiScene* scene = aiImportFile(filename,	aiProcess_GenSmoothNormals |
+													aiProcess_Triangulate |
+													aiProcess_CalcTangentSpace |
+													aiProcess_FlipUVs|
+													aiProcess_JoinIdenticalVertices);
 	
 	if (!scene)
 	{
@@ -19,7 +21,9 @@ Scene::Scene(const char* filename)
 
 	LoadGLTextures(scene, getBasePath(filename));
 	recursiveLoad(scene->mRootNode, scene);
+	#ifdef DEBUG 
 	std::cout << "number of meshes : " << scene->mNumMeshes << std::endl;
+	#endif	
 	aiReleaseImport(scene);
 }
 
@@ -125,7 +129,7 @@ void Scene::processMesh(aiMesh* mesh, const aiScene* scene)
 		ReadMaterial(scene->mMaterials[m]);
 	}
 
-	/*aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+	aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
 	for (size_t i = 0; i < mat->GetTextureCount(aiTextureType_DIFFUSE); i++)
 	{
 		aiString str;
@@ -134,7 +138,7 @@ void Scene::processMesh(aiMesh* mesh, const aiScene* scene)
 		tmp.id = loadTexture(str.C_Str());
 		tmp.type = 0;
 		textures.push_back(tmp);
-	}*/
+	}
 	meshes.push_back(meshPtr(new Mesh(&data,&indices,&textures)));
 	
 }
@@ -203,7 +207,7 @@ unsigned int Scene::loadTexture(const char *filename)
 	GLCall(glGenTextures(1, &num));
 	GLCall(glBindTexture(GL_TEXTURE_2D, num));
 	
-	std::string path = "C:\\Users\\jpcordovae\\Desktop\\SDL2GL\\SDL2GL\\3DModels\\";
+	std::string path;// = "C:\\Users\\jpcordovae\\Desktop\\SDL2GL\\SDL2GL\\3DModels\\";
 	path += filename;
 	SDL_Surface* img = IMG_Load(path.c_str());
 	if (img == NULL)

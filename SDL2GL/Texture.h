@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <map>
 
 struct stTextureData {
 	stTextureData() :id(0), type(0) {}
@@ -31,3 +32,4 @@ private:
 };
 
 typedef Texture::texturePtr texturePtr;
+extern std::map<std::string,Texture> mpTextures;
