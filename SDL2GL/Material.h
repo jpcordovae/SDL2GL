@@ -30,6 +30,7 @@ public:
 	Material() {}
 	typedef std::shared_ptr<Material> materialPtr;
 	Material(const aiMaterial *aiMat);
+	std::string GetMaterialName();
 	virtual ~Material();
 private:
 	void LoadTextures(const aiMaterial *mtl);

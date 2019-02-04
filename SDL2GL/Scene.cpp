@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include "Material.h"
 #include <functional>
+#include <string>
 
 Scene::Scene(const char* filename)
 {
@@ -18,13 +19,39 @@ Scene::Scene(const char* filename)
 	{
 		throw scene_exception(importer.GetErrorString());
 	}
-
-	LoadGLTextures(scene, getBasePath(filename));
+	readMaterialsFromScene(scene);
+	//LoadGLTextures(scene, getBasePath(filename));
 	recursiveLoad(scene->mRootNode, scene);
 	#ifdef DEBUG 
 	std::cout << "number of meshes : " << scene->mNumMeshes << std::endl;
 	#endif	
 	aiReleaseImport(scene);
+}
+
+void Scene::readMaterialsFromScene(const aiScene* scene)
+{
+	for (size_t m = 0; m < scene->mNumMaterials; m++)
+	{
+		aiString matName;
+		scene->mMaterials[m]->Get(AI_MATKEY_NAME, matName);
+#ifdef _DEBUG
+		std::cout << "reading material " << matName.C_Str() << "... ";
+#endif
+		std::string sMatName(matName.C_Str());
+		if (!existMaterial(sMatName))
+		{
+			m_materials[sMatName] = materialPtr(new Material(scene->mMaterials[m]));
+#ifdef _DEBUG
+			std::cout << " done." << std::endl;
+#endif
+		}
+		else
+		{
+#ifdef _DEBUG
+			std::cout << " already in memory." << std::endl;
+#endif
+		}
+	}
 }
 
 void Scene::recursiveLoad(aiNode* node, const aiScene* scene)
@@ -124,31 +151,35 @@ void Scene::processMesh(aiMesh* mesh, const aiScene* scene)
 		}
 	}
 
-	for (size_t m = 0; m < scene->mNumMaterials; m++)
-	{
-		ReadMaterial(scene->mMaterials[m]);
-	}
-
-	aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+	/*aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+	stTextureData tmp;
 	for (size_t i = 0; i < mat->GetTextureCount(aiTextureType_DIFFUSE); i++)
 	{
 		aiString str;
 		mat->GetTexture(aiTextureType_DIFFUSE, i, &str);
-		stTextureData tmp;
-		tmp.id = loadTexture(str.C_Str());
+		if( (tmp.id=loadTexture(str.C_Str())) == -1) tmp.id = 0;
 		tmp.type = 0;
 		textures.push_back(tmp);
-	}
-	meshes.push_back(meshPtr(new Mesh(&data,&indices,&textures)));
+	}*/
 	
+	meshes.push_back(meshPtr(new Mesh(&data,&indices,&textures)));
+
+}
+
+bool Scene::existMaterial(std::string &matName)
+{
+	if (m_materials.find(matName) != m_materials.end())
+		return true;
+
+	return false;
 }
 
 materialPtr Scene::ReadMaterial(const aiMaterial *mtl)
 {
-	return materialPtr(new Material(mtl));
+	return 
 }
 
-void Scene::GetAllMaterialsFromScene(const aiScene *scene)
+void Scene::ReadAllMaterialsFromScene(const aiScene *scene)
 {
 	for (size_t m = 0; m < scene->mNumMaterials; m++)
 	{
@@ -159,9 +190,10 @@ void Scene::GetAllMaterialsFromScene(const aiScene *scene)
 			it = materialContainer.find(std::string(name.C_Str()));
 			if (it == materialContainer.end())
 			{
-				std::cerr << "material already loaded";
+				std::cout << "material file " << std::string(name.C_Str()) << " already loaded...";
 				continue;
 			}
+			std::cout << "reading file" << std::string(name.C_Str()) << std::endl;
 			materialContainer[std::string(name.C_Str())] = ReadMaterial(scene->mMaterials[m]);
 		}
 		catch (material_exception &e)
