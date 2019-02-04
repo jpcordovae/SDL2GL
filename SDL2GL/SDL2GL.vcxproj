@@ -90,7 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;GLEW_STATIC;_CONSOLE;GLM_ENABLE_EXPERIMENTAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\jcordovaech\Libraries\boost_1_68_0;dev_lib\assimp-3.3.1\include;dev_lib\glew-2.1.0\include;dev_lib\SDL2-2.0.8\include;dev_lib\glm;dev_lib\SDL2_image-2.0.3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\jcordovaech\Libraries\boost_1_68_0;dev_lib\assimp-3.3.1\include;dev_lib\glew-2.1.0\include;dev_lib\SDL2-2.0.8\include;dev_lib\glm;dev_lib\SDL2_image-2.0.3;C:\libraries\boost_1_69_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <Link>

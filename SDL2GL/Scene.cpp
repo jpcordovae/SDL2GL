@@ -174,11 +174,6 @@ bool Scene::existMaterial(std::string &matName)
 	return false;
 }
 
-materialPtr Scene::ReadMaterial(const aiMaterial *mtl)
-{
-	return 
-}
-
 void Scene::ReadAllMaterialsFromScene(const aiScene *scene)
 {
 	for (size_t m = 0; m < scene->mNumMaterials; m++)
