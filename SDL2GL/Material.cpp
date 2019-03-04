@@ -1,6 +1,7 @@
 #include "Material.h"
 #include <iostream>
-#include <boost/log/trivial.hpp>
+#include "Utils.h"
+//#include <boost/log/trivial.hpp>
 
 std::map<std::string, materialPtr> materialContainer;// one cotainer for all the materials on the application
 
@@ -13,7 +14,6 @@ Material::Material(const aiMaterial *aiMat)
 		//TODO: do something here, message and null the material
 	}
 	m_name = std::string(matName.C_Str());
-
 	//LoadAiMaterial(aiMat);
 }
 
@@ -24,26 +24,30 @@ std::string Material::GetMaterialName()
 
 void Material::LoadTextures(const aiMaterial *mtl)
 {
-	//diffuse textures
-	int texIndex = 0;
+	int idx_texture = 0;
+	aiString path;
 
 	for (size_t nTx = 0; nTx < mtl->GetTextureCount(aiTextureType_DIFFUSE); nTx++)
 	{
-		m_textures_diffuse[m_name] = nullptr;
-		texIndex++;
+		mtl->GetTexture(aiTextureType_DIFFUSE, idx_texture, &path);
+
+		m_textures_diffuse[m_name] = (GLuint)idx_texture;
 	}
 
 	for (size_t nTx = 0; nTx < mtl->GetTextureCount(aiTextureType_SPECULAR); nTx++)
 	{
-		m_textures_specular[m_name] = nullptr;
-		texIndex++;
+		m_textures_specular[m_name] = 0;
 	}
 
 	for (size_t nTx = 0; nTx < mtl->GetTextureCount(aiTextureType_AMBIENT); nTx++)
 	{
-		m_textures_specular[m_name] = nullptr;
-		texIndex++;
+		m_textures_specular[m_name] = 0;
 	}
+}
+
+GLuint Material::ReadTextureFromPath(const std::string &path)
+{
+	return 0;
 }
 
 Material::~Material()
