@@ -23,10 +23,21 @@ struct stVertexData {
 	float UV[2];
 };
 
+class mesh_exception : public std::runtime_error
+{
+public:
+	mesh_exception(const std::string &error) :std::runtime_error(error) {};
+};
+
 class Mesh
 {
+	typedef struct {
+		GLuint texture_index;
+		GLuint texture_operation;
+	} st_mesh_texture;
+
 	std::vector<stVertexData> data;
-	std::vector<stTextureData> textures;
+	materialPtr m_material; // only one material per mesh
 	std::vector<unsigned int> indices;
 	Material m_mat;
 	unsigned int VAO;
@@ -35,7 +46,9 @@ class Mesh
 	unsigned int TXR; // for textures indexs
 public:
 	typedef std::shared_ptr<Mesh> meshPtr;
-	Mesh(std::vector<stVertexData> *vd, std::vector<unsigned int>*id, std::vector<stTextureData> *td);
+	Mesh(std::vector<stVertexData> *vd, 
+		 std::vector<unsigned int>*id, 
+		 materialPtr material);
 	~Mesh();
 	void draw(unsigned int programId);
 };

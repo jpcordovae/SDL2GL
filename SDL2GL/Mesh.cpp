@@ -4,16 +4,11 @@
 #include <GL/GLU.h>
 #include "Utils.h"
 
-Mesh::Mesh(std::vector<stVertexData> *vd, std::vector<unsigned int>*id, std::vector<stTextureData> *td = NULL)
+Mesh::Mesh(std::vector<stVertexData> *vd, std::vector<unsigned int>*id, materialPtr material)
 {
 	data = *vd;
 	indices = *id;
-	
-	if (td)
-	{
-		textures = *td;
-	}
-
+	m_material = material;
 	GLCall(glCreateBuffers(1, &VBO));
 	GLCall(glNamedBufferStorage(VBO, data.size() * sizeof(stVertexData), data.data(), 0));
 
@@ -63,14 +58,11 @@ Mesh::~Mesh()
 
 void Mesh::draw(unsigned int programId)
 {
-	std::string str = "texture";
-	for (size_t i = 0; i < textures.size(); i++)
-	{
-		std::string sTmp = str + std::to_string(i);
-		GLCall(glActiveTexture(GL_TEXTURE0 + i ));
-		GLCall(glBindTexture(GL_TEXTURE_2D, textures[i].id));
-		GLCall(glUniform1i(glGetUniformLocation(programId, sTmp.c_str()), i));
-	}
+	glUseProgram(programId);
+	GLint text_diffuse_loc = glGetUniformLocation(programId,"texture_diffuse");
+	glUniform1i(text_diffuse_loc,m_material->m_textures_diffuse->GetID());
+	glActiveTexture(GL_TEXTURE0 + m_material->m_textures_diffuse->GetID());
+	glBindTexture(GL_TEXTURE_2D,text_diffuse_loc);
 
 	GLCall(glBindVertexArray(VAO));
 

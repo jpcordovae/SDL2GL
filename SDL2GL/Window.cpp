@@ -86,8 +86,8 @@ void Window::Init()
 	GLCall(glDepthFunc(GL_LESS));
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_BACK);
-	//GLCall(glEnable(GL_BLEND));
-	//GLCall(glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA));
+	GLCall(glEnable(GL_BLEND));
+	GLCall(glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA));
 }
 
 void Window::InitRenderer()
@@ -111,7 +111,7 @@ void Window::Draw(float _dTime)
 	
 	static float rotAngle = 0.0f;
 	glm::mat4 model = glm::rotate(rotAngle+=0.01f,glm::vec3(0.0f,1.0f,0.0f));
-	sdlCamera->setLocation(glm::vec3(0.0f, 0.0f, 2.0f));
+	sdlCamera->setLocation(glm::vec3(0.0f, 0.0f, 8.0f));
 	glm::mat4 view = glm::lookAt(sdlCamera->getLocation(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 4.0, 0.0));
 	glm::mat4 projection = glm::perspective(45.0f, 1.0f * wWidth / wHeight, 0.1f, 100.0f);
 	glm::mat4 modelView = view * model;

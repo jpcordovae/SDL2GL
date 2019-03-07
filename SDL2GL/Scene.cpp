@@ -40,7 +40,7 @@ void Scene::readMaterialsFromScene(const aiScene* scene)
 		std::string sMatName(matName.C_Str());
 		if (!existMaterial(sMatName))
 		{
-			m_materials[sMatName] = materialPtr(new Material(scene->mMaterials[m]));
+			materials_db[sMatName] = materialPtr(new Material(scene->mMaterials[m]));
 #ifdef _DEBUG
 			std::cout << " done." << std::endl;
 #endif
@@ -83,7 +83,7 @@ void Scene::processMesh(aiMesh* mesh, const aiScene* scene)
 {
 	std::vector<stVertexData> data;
 	std::vector<unsigned int> indices;
-	std::vector<stTextureData> textures;
+	materialPtr material; // only one material per mesh
 	for (size_t i = 0; i < mesh->mNumVertices; i++)
 	{
 		stVertexData tmp;
@@ -150,25 +150,17 @@ void Scene::processMesh(aiMesh* mesh, const aiScene* scene)
 			indices.push_back(face.mIndices[j]);
 		}
 	}
-
-	/*aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-	stTextureData tmp;
-	for (size_t i = 0; i < mat->GetTextureCount(aiTextureType_DIFFUSE); i++)
-	{
-		aiString str;
-		mat->GetTexture(aiTextureType_DIFFUSE, i, &str);
-		if( (tmp.id=loadTexture(str.C_Str())) == -1) tmp.id = 0;
-		tmp.type = 0;
-		textures.push_back(tmp);
-	}*/
 	
-	meshes.push_back(meshPtr(new Mesh(&data,&indices,&textures)));
+	aiString matName;
+	scene->mMaterials[mesh->mMaterialIndex]->Get(AI_MATKEY_NAME, matName);
+
+	meshes.push_back(meshPtr(new Mesh(&data, &indices, materials_db[std::string(matName.C_Str())])));
 
 }
 
 bool Scene::existMaterial(std::string &matName)
 {
-	if (m_materials.find(matName) != m_materials.end())
+	if (materials_db.find(matName) != materials_db.end())
 		return true;
 
 	return false;
@@ -182,15 +174,15 @@ void Scene::ReadAllMaterialsFromScene(const aiScene *scene)
 			aiString name;
 			scene->mMaterials[m]->Get(AI_MATKEY_NAME, name);
 			std::map<std::string, materialPtr>::iterator it;
-			it = m_materials.find(std::string(name.C_Str()));
-			if (it == m_materials.end())
+			it = materials_db.find(std::string(name.C_Str()));
+			if (it == materials_db.end())
 			{
 				std::cout << "material file " << std::string(name.C_Str()) << " already loaded...";
 				continue;
 			}
 			else {
 				std::cout << "new material " << std::string(name.C_Str()) << std::endl;
-				m_materials[std::string(name.C_Str())] = materialPtr(new Material(scene->mMaterials[m]));
+				materials_db[std::string(name.C_Str())] = materialPtr(new Material(scene->mMaterials[m]));
 			}
 		}
 		catch (material_exception &e)
@@ -264,6 +256,7 @@ void Scene::ReadAllMaterialsFromScene(const aiScene *scene)
 
 void Scene::Draw(unsigned int programId)
 {
+
 	for (size_t i = 0; i < meshes.size(); i++)
 	{
 		meshes[i]->draw(programId);

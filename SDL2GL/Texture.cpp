@@ -21,6 +21,7 @@ Texture::Texture(const std::string filename)
 		std::string out = "texture file " + filename + "doesn't exist";
 		throw texture_exception(out.c_str());
 	}
+	load_texture_from_file(filename.c_str());
 }
 
 

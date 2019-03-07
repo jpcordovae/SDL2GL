@@ -1,7 +1,8 @@
 #include "Material.h"
 #include <iostream>
 #include "Utils.h"
-//#include <boost/log/trivial.hpp>
+
+std::map<std::string, materialPtr> materials_db;
 
 Material::Material(const aiMaterial *aiMat)
 {
@@ -30,12 +31,12 @@ void Material::LoadTextures(const aiMaterial *mtl)
 		mtl->GetTexture(aiTextureType_DIFFUSE, idx_texture, &path);
 		if (textures_db.find(std::string(path.C_Str())) != textures_db.end())
 		{
-			std::cout << "texture " << std::string(path.C_Str()) << " already loaded" << std:.endl;
+			std::cout << "texture " << std::string(path.C_Str()) << " already loaded" << std::endl;
 			continue;
 		}
 		textures_db[std::string(path.C_Str())] = texturePtr(new Texture(std::string(path.C_Str())));
 		textures_db[std::string(path.C_Str())]->SetType(aiTextureType_DIFFUSE);
-		m_textures_diffuse[m_name] = textures_db[std::string(path.C_Str())]->GetID();
+		m_textures_diffuse = textures_db[std::string(path.C_Str())];
 	}
 
 	for (size_t nTx = 0; nTx < mtl->GetTextureCount(aiTextureType_SPECULAR); nTx++)

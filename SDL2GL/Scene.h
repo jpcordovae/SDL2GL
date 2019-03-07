@@ -32,10 +32,10 @@ private:
 	void processMesh(aiMesh* mesh, const aiScene* scene);
 	void ReadAllMaterialsFromScene(const aiScene *scene);
 	//void LoadGLTextures(const aiScene* scene, const std::string& pModelPath);
-	materialPtr ReadMaterial(const aiMaterial *mat);
+	//materialPtr ReadMaterial(const aiMaterial *mat);
 	//unsigned int loadTexture(const char *filename);
 	//GLuint*	textureIds = nullptr;// pointer to texture Array
-	std::map < std::string, materialPtr> m_materials;
+	//std::map < std::string, materialPtr> m_materials;
 	std::map<std::string, uint16_t> m_textures;
 };
 

@@ -36,7 +36,7 @@ private:
 	bool m_bWireframe;
 	bool m_bTwosided;
 	std::string m_name; // same as in first of map on materialContainer
-	std::map<std::string, GLint> m_textures_diffuse;
+	texturePtr m_textures_diffuse;
 	std::map<std::string, GLint> m_textures_specular;
 	std::map<std::string, GLint> m_textures_ambient;
 	std::map<std::string, GLint> m_textures_emissive;
@@ -48,6 +48,9 @@ private:
 	std::map<std::string, GLint> m_textures_lightmap;
 	std::map<std::string, GLint> m_textures_reflection;
 	std::map<std::string, GLint> m_textures_unknown;
+
+	friend class Mesh;
 };
 
 typedef Material::materialPtr materialPtr;
+extern std::map<std::string, materialPtr> materials_db;
