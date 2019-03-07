@@ -3,11 +3,11 @@
 #include <string>
 #include <map>
 
-struct stTextureData {
+/*struct stTextureData {
 	stTextureData() :id(0), type(0) {}
 	unsigned int id;
 	unsigned int type;
-};
+};*/
 
 class texture_exception : public std::runtime_error
 {
@@ -27,9 +27,10 @@ public:
 	virtual ~Texture();
 private:
 	Texture();
+	unsigned int load_texture_from_file(const char *filename);
 	unsigned int id;
 	unsigned int type;
 };
 
 typedef Texture::texturePtr texturePtr;
-extern std::map<std::string,Texture> mpTextures;
+extern std::map<std::string,texturePtr> textures_db;

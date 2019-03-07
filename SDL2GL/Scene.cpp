@@ -182,14 +182,16 @@ void Scene::ReadAllMaterialsFromScene(const aiScene *scene)
 			aiString name;
 			scene->mMaterials[m]->Get(AI_MATKEY_NAME, name);
 			std::map<std::string, materialPtr>::iterator it;
-			it = materialContainer.find(std::string(name.C_Str()));
-			if (it == materialContainer.end())
+			it = m_materials.find(std::string(name.C_Str()));
+			if (it == m_materials.end())
 			{
 				std::cout << "material file " << std::string(name.C_Str()) << " already loaded...";
 				continue;
 			}
-			std::cout << "reading file" << std::string(name.C_Str()) << std::endl;
-			materialContainer[std::string(name.C_Str())] = ReadMaterial(scene->mMaterials[m]);
+			else {
+				std::cout << "new material " << std::string(name.C_Str()) << std::endl;
+				m_materials[std::string(name.C_Str())] = materialPtr(new Material(scene->mMaterials[m]));
+			}
 		}
 		catch (material_exception &e)
 		{
@@ -199,7 +201,7 @@ void Scene::ReadAllMaterialsFromScene(const aiScene *scene)
 	}
 }
 
-void Scene::LoadGLTextures(const aiScene* scene, const std::string& pModelPath)
+/*void Scene::LoadGLTextures(const aiScene* scene, const std::string& pModelPath)
 {
 	// Check if scene has textures.
 	if (scene->HasTextures())
@@ -224,9 +226,9 @@ void Scene::LoadGLTextures(const aiScene* scene, const std::string& pModelPath)
 
 		}
 	}
-}
+}*/
 
-unsigned int Scene::loadTexture(const char *filename)
+/*unsigned int Scene::loadTexture(const char *filename)
 {
 	std::cout << "loading texture " << filename << std::endl;
 	
@@ -258,7 +260,7 @@ unsigned int Scene::loadTexture(const char *filename)
 
 	SDL_FreeSurface(img);
 	return num;
-}
+}*/
 
 void Scene::Draw(unsigned int programId)
 {

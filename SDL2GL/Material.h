@@ -8,20 +8,12 @@
 #include <map>
 #include <string>
 #include <GL\glew.h>
-
+#include "Texture.h"
 
 class material_exception : public std::runtime_error
 {
 public:
 	material_exception(const std::string &error) : std::runtime_error(error) {};
-};
-
-class stTexture {
-private:
-	std::string m_name;
-	std::string m_path;
-	int type;
-	int id;
 };
 
 class Material
@@ -44,20 +36,18 @@ private:
 	bool m_bWireframe;
 	bool m_bTwosided;
 	std::string m_name; // same as in first of map on materialContainer
-	std::map<std::string, stTexture*> m_mTextures;
-	std::map<std::string, GLuint> m_textures_diffuse;
-	std::map<std::string, GLuint> m_textures_specular;
-	std::map<std::string, GLuint> m_textures_ambient;
-	std::map<std::string, GLuint> m_textures_emissive;
-	std::map<std::string, GLuint> m_textures_height;
-	std::map<std::string, GLuint> m_textures_normals;
-	std::map<std::string, GLuint> m_textures_shininess;
-	std::map<std::string, GLuint> m_textures_opacity;
-	std::map<std::string, GLuint> m_textures_displacement;
-	std::map<std::string, GLuint> m_textures_lightmap;
-	std::map<std::string, GLuint> m_textures_reflection;
-	std::map<std::string, GLuint> m_textures_unknown;
+	std::map<std::string, GLint> m_textures_diffuse;
+	std::map<std::string, GLint> m_textures_specular;
+	std::map<std::string, GLint> m_textures_ambient;
+	std::map<std::string, GLint> m_textures_emissive;
+	std::map<std::string, GLint> m_textures_height;
+	std::map<std::string, GLint> m_textures_normals;
+	std::map<std::string, GLint> m_textures_shininess;
+	std::map<std::string, GLint> m_textures_opacity;
+	std::map<std::string, GLint> m_textures_displacement;
+	std::map<std::string, GLint> m_textures_lightmap;
+	std::map<std::string, GLint> m_textures_reflection;
+	std::map<std::string, GLint> m_textures_unknown;
 };
 
 typedef Material::materialPtr materialPtr;
-extern std::map<std::string, materialPtr> materialContainer;

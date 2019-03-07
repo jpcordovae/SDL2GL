@@ -3,8 +3,6 @@
 #include "Utils.h"
 //#include <boost/log/trivial.hpp>
 
-std::map<std::string, materialPtr> materialContainer;// one cotainer for all the materials on the application
-
 Material::Material(const aiMaterial *aiMat)
 {
 	assert(aiMat != nullptr);
@@ -14,7 +12,7 @@ Material::Material(const aiMaterial *aiMat)
 		//TODO: do something here, message and null the material
 	}
 	m_name = std::string(matName.C_Str());
-	//LoadAiMaterial(aiMat);
+	LoadTextures(aiMat);
 }
 
 std::string Material::GetMaterialName()
@@ -30,8 +28,14 @@ void Material::LoadTextures(const aiMaterial *mtl)
 	for (size_t nTx = 0; nTx < mtl->GetTextureCount(aiTextureType_DIFFUSE); nTx++)
 	{
 		mtl->GetTexture(aiTextureType_DIFFUSE, idx_texture, &path);
-
-		m_textures_diffuse[m_name] = (GLuint)idx_texture;
+		if (textures_db.find(std::string(path.C_Str())) != textures_db.end())
+		{
+			std::cout << "texture " << std::string(path.C_Str()) << " already loaded" << std:.endl;
+			continue;
+		}
+		textures_db[std::string(path.C_Str())] = texturePtr(new Texture(std::string(path.C_Str())));
+		textures_db[std::string(path.C_Str())]->SetType(aiTextureType_DIFFUSE);
+		m_textures_diffuse[m_name] = textures_db[std::string(path.C_Str())]->GetID();
 	}
 
 	for (size_t nTx = 0; nTx < mtl->GetTextureCount(aiTextureType_SPECULAR); nTx++)
