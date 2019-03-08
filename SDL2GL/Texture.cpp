@@ -29,7 +29,7 @@ unsigned int Texture::load_texture_from_file(const char *filename)
 {
 	std::cout << "loading texture " << filename << std::endl;
 
-	unsigned int num;
+	GLuint num;
 	GLCall(glGenTextures(1, &num));
 	GLCall(glBindTexture(GL_TEXTURE_2D, num));
 

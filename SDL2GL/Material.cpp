@@ -31,7 +31,7 @@ void Material::LoadTextures(const aiMaterial *mtl)
 		mtl->GetTexture(aiTextureType_DIFFUSE, idx_texture, &path);
 		if (textures_db.find(std::string(path.C_Str())) != textures_db.end())
 		{
-			std::cout << "texture " << std::string(path.C_Str()) << " already loaded" << std::endl;
+			m_textures_diffuse = textures_db[std::string(path.C_Str())];
 			continue;
 		}
 		textures_db[std::string(path.C_Str())] = texturePtr(new Texture(std::string(path.C_Str())));
