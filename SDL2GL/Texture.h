@@ -28,7 +28,7 @@ public:
 private:
 	Texture();
 	unsigned int load_texture_from_file(const char *filename);
-	unsigned int id;
+	unsigned int texture_index;
 	unsigned int type;
 };
 

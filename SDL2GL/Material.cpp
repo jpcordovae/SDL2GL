@@ -31,22 +31,22 @@ void Material::LoadTextures(const aiMaterial *mtl)
 		mtl->GetTexture(aiTextureType_DIFFUSE, idx_texture, &path);
 		if (textures_db.find(std::string(path.C_Str())) != textures_db.end())
 		{
-			m_textures_diffuse = textures_db[std::string(path.C_Str())];
+			m_texture_diffuse = textures_db[std::string(path.C_Str())];
 			continue;
 		}
 		textures_db[std::string(path.C_Str())] = texturePtr(new Texture(std::string(path.C_Str())));
 		textures_db[std::string(path.C_Str())]->SetType(aiTextureType_DIFFUSE);
-		m_textures_diffuse = textures_db[std::string(path.C_Str())];
+		m_texture_diffuse = textures_db[std::string(path.C_Str())];
 	}
 
 	for (size_t nTx = 0; nTx < mtl->GetTextureCount(aiTextureType_SPECULAR); nTx++)
 	{
-		m_textures_specular[m_name] = 0;
+		//m_textures_specular[m_name] = 0;
 	}
 
 	for (size_t nTx = 0; nTx < mtl->GetTextureCount(aiTextureType_AMBIENT); nTx++)
 	{
-		m_textures_specular[m_name] = 0;
+		//m_textures_specular[m_name] = 0;
 	}
 }
 

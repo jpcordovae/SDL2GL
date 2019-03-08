@@ -38,8 +38,9 @@ unsigned int Texture::load_texture_from_file(const char *filename)
 	SDL_Surface* img = IMG_Load(path.c_str());
 	if (img == NULL)
 	{
-		std::cout << "img was not loaded" << std::endl;
-		return -1;
+		texture_exception("Error loading texture file");
+		//std::cout << "img was not loaded" << std::endl;
+		//return -1;
 	}
 
 	int Mode = GL_RGB;
@@ -56,18 +57,18 @@ unsigned int Texture::load_texture_from_file(const char *filename)
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 
 	SDL_FreeSurface(img);
-	SetID(num);
+	texture_index = num;
 	return num;
 }
 
 void Texture::SetID(unsigned int _id)
 {
-	id = _id;
+	texture_index = _id;
 }
 
 unsigned int Texture::GetID()
 {
-	return id;
+	return texture_index;
 }
 
 void Texture::SetType(unsigned int _type)

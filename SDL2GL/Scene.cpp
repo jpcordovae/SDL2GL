@@ -153,8 +153,8 @@ void Scene::processMesh(aiMesh* mesh, const aiScene* scene)
 	
 	aiString matName;
 	scene->mMaterials[mesh->mMaterialIndex]->Get(AI_MATKEY_NAME, matName);
-
-	meshes.push_back(meshPtr(new Mesh(&data, &indices, materials_db[std::string(matName.C_Str())])));
+	materialPtr mtl = materials_db[std::string(matName.C_Str())];
+	meshes.push_back(meshPtr(new Mesh(&data, &indices, mtl )));
 
 }
 
@@ -177,7 +177,7 @@ void Scene::ReadAllMaterialsFromScene(const aiScene *scene)
 			it = materials_db.find(std::string(name.C_Str()));
 			if (it == materials_db.end())
 			{
-				std::cout << "material file " << std::string(name.C_Str()) << " already loaded...";
+				std::cout << "material " << std::string(name.C_Str()) << " already loaded.";
 				continue;
 			}
 			else {
