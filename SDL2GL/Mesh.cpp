@@ -60,9 +60,10 @@ void Mesh::draw(unsigned int programId)
 {
 	glUseProgram(programId);
 	GLint text_diffuse_loc = glGetUniformLocation(programId,"texture_diffuse");
-	glUniform1i(text_diffuse_loc,m_material->m_textures_diffuse->GetID());
-	glActiveTexture(GL_TEXTURE0 + m_material->m_textures_diffuse->GetID());
-	glBindTexture(GL_TEXTURE_2D,text_diffuse_loc);
+	glUniform1i(text_diffuse_loc,0);
+	glActiveTexture(GL_TEXTURE0 );
+	glBindTexture(GL_TEXTURE_2D, m_material->m_textures_diffuse->GetID());
+
 
 	GLCall(glBindVertexArray(VAO));
 

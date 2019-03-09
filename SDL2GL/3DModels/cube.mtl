@@ -1,5 +1,5 @@
 # Blender MTL File: 'None'
-# Material Count: 1
+# Material Count: 3
 
 newmtl Material
 Ns 96.078431
@@ -10,4 +10,26 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd D:\\Software\\Haption\\SDL2GL\\SDL2GL\\Texture\\chalk-156429.jpg
+map_Kd -s 3.000000 3.000000 0.000000 C:\\Users\\jpcordovae\\Desktop\\SDL2GL\\SDL2GL\\Texture\\glass-ball,-hand-189214.jpg
+
+newmtl Material.001
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\jpcordovae\\Desktop\\SDL2GL\\SDL2GL\\Texture\\ferris-wheel,-sunset-over-the-beach,-sea,-sand-160719.jpg
+
+newmtl mflaf
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\jpcordovae\\Desktop\\SDL2GL\\SDL2GL\\Texture\\historic-clocks,-water,-bubbles-189354.jpg
