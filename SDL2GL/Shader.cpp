@@ -1,20 +1,22 @@
 #include "stdafx.h"
 #include "Shader.h"
 
+std::map<std::string, shaderPtr> shader_db;
+
 Shader::Shader(std::string _vertexFileName, std::string _fragmentFileName)
 {
 	this->ready = false;
 	this->vertexFileName = _vertexFileName;
 	this->fragmentFileName = _fragmentFileName;
 #ifdef _DEBUG
-	std::cout << "loading shader... " << _vertexFileName << ", " << _fragmentFileName << std::endl;
+	std::cout << "loading shader files : " << _vertexFileName << ", " << _fragmentFileName << std::endl;
 #endif
 	if (this->Load() < 1) {
 		std::cout << "Error loading shader sources" << std::endl;
 		return;
 	}
 #ifdef _DEBUG
-	std::cout << "compiling shaders... " << _vertexFileName << ", " << _fragmentFileName << std::endl;
+	std::cout << "compiling shader     : " << _vertexFileName << ", " << _fragmentFileName << std::endl;
 #endif
 
 	if (this->Compile() < 1) {
@@ -22,7 +24,7 @@ Shader::Shader(std::string _vertexFileName, std::string _fragmentFileName)
 		return;
 	} 
 #ifdef _DEBUG
-	std::cout << "linking shaders... " << _vertexFileName << ", " << _fragmentFileName << std::endl;
+	std::cout << "linking shader       : " << _vertexFileName << ", " << _fragmentFileName << std::endl;
 #endif
 	if (this->Link() < 1) {
 		std::cout << "Error linking shader sources" << std::endl;
@@ -83,15 +85,15 @@ int Shader::Compile()
 {
 	const char * tempSource = this->vertexSource.c_str();
 	this->vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(this->vertexShader, 1, &tempSource, 0);
-	glCompileShader(this->vertexShader);
+	GLCall(glShaderSource(this->vertexShader, 1, &tempSource, 0));
+	GLCall(glCompileShader(this->vertexShader));
 	GLint compiled=0;  
-	glGetShaderiv(this->vertexShader, GL_COMPILE_STATUS, &compiled);
+	GLCall(glGetShaderiv(this->vertexShader, GL_COMPILE_STATUS, &compiled));
 	if (!compiled) {
 		unsigned int maxLength;
-		glGetShaderiv(this->vertexShader,GL_INFO_LOG_LENGTH,(GLint*)&maxLength);
+		GLCall(glGetShaderiv(this->vertexShader,GL_INFO_LOG_LENGTH,(GLint*)&maxLength));
 		char *vertexCompileLog = (char *)malloc(maxLength);
-		glGetShaderInfoLog(this->vertexShader, maxLength, (GLsizei*)&maxLength, vertexCompileLog);
+		GLCall(glGetShaderInfoLog(this->vertexShader, maxLength, (GLsizei*)&maxLength, vertexCompileLog));
 		std::cout << "Vertex Shader error: " << std::endl << vertexCompileLog<< std::endl;
 		free(vertexCompileLog);
 		return -1;
@@ -99,15 +101,15 @@ int Shader::Compile()
 
 	tempSource = this->fragmentSource.c_str();
 	this->fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(this->fragmentShader, 1, &tempSource, 0);
-	glCompileShader(this->fragmentShader);
+	GLCall(glShaderSource(this->fragmentShader, 1, &tempSource, 0));
+	GLCall(glCompileShader(this->fragmentShader));
 	compiled = 0;
-	glGetShaderiv(this->fragmentShader, GL_COMPILE_STATUS, &compiled);
+	GLCall(glGetShaderiv(this->fragmentShader, GL_COMPILE_STATUS, &compiled));
 	if (!compiled) {
 		unsigned int maxLength;
-		glGetShaderiv(this->fragmentShader, GL_INFO_LOG_LENGTH, (GLint*)&maxLength);
+		GLCall(glGetShaderiv(this->fragmentShader, GL_INFO_LOG_LENGTH, (GLint*)&maxLength));
 		char *fragmentCompileLog = (char *)malloc(maxLength);
-		glGetShaderInfoLog(this->fragmentShader, maxLength, (GLsizei*)&maxLength, fragmentCompileLog);
+		GLCall(glGetShaderInfoLog(this->fragmentShader, maxLength, (GLsizei*)&maxLength, fragmentCompileLog));
 		std::cout << "Fragment Shader error: " << std::endl << fragmentCompileLog << std::endl;
 		free(fragmentCompileLog);
 		return -2;
@@ -118,17 +120,17 @@ int Shader::Compile()
 int Shader::Link()
 {
 	this->shaderProgram = glCreateProgram();
-	glAttachShader(this->shaderProgram, this->vertexShader);
-	glAttachShader(this->shaderProgram, this->fragmentShader);
-	glLinkProgram(this->shaderProgram);
+	GLCall(glAttachShader(this->shaderProgram, this->vertexShader));
+	GLCall(glAttachShader(this->shaderProgram, this->fragmentShader));
+	GLCall(glLinkProgram(this->shaderProgram));
 	GLint linked=0;
-	glGetProgramiv(this->shaderProgram, GL_LINK_STATUS, &linked);
+	GLCall(glGetProgramiv(this->shaderProgram, GL_LINK_STATUS, &linked));
 	if (linked != GL_TRUE)
 	{
 		unsigned int maxLength;
-		glGetProgramiv(this->shaderProgram, GL_INFO_LOG_LENGTH, (GLint*)&maxLength);
+		GLCall(glGetProgramiv(this->shaderProgram, GL_INFO_LOG_LENGTH, (GLint*)&maxLength));
 		char *programLinkLog = (char*)malloc(maxLength);
-		glGetProgramInfoLog(this->shaderProgram,maxLength,(GLsizei*)&maxLength,programLinkLog);
+		GLCall(glGetProgramInfoLog(this->shaderProgram,maxLength,(GLsizei*)&maxLength,programLinkLog));
 		std::cout << "Program link error: " << std::endl << programLinkLog << std::endl << std::endl;
 		free(programLinkLog);
 		return -1;

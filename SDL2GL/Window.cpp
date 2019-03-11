@@ -11,6 +11,27 @@
 
 std::list<windowPtr> windowsContainer;
 
+Window::Window()
+{
+	this->sdlWindow = SDL_CreateWindow("void title",100, 100, 800, 600,SDL_WINDOWS_FLAGS);
+	
+	if (this->sdlWindow == nullptr)
+	{
+		throw window_exception(SDL_GetError());
+	}
+	
+	this->wWidth = 800;
+	this->wHeight = 600;
+	
+	sdlCamera = cameraPtr(new Camera());
+	this->InitRenderer();
+	
+	sdlWindowID = SDL_GetWindowID(this->sdlWindow);
+	initialized = true;
+	
+	windowsContainer.emplace_back(std::shared_ptr<Window>(this));
+}
+
 Window::Window(const std::string &title, int x, int y, int width, int height)
 {
 	this->sdlWindow = SDL_CreateWindow(title.c_str(), 

@@ -9,6 +9,7 @@ Mesh::Mesh(std::vector<stVertexData> *vd, std::vector<unsigned int>*id, material
 	data = *vd;
 	indices = *id;
 	m_material = material;
+
 	GLCall(glCreateBuffers(1, &VBO));
 	GLCall(glNamedBufferStorage(VBO, data.size() * sizeof(stVertexData), data.data(), 0));
 

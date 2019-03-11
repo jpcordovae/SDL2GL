@@ -33,7 +33,8 @@ Application::Application()
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		
-		this->window = new Window("hello world", 640,480);
+		this->window = windowPtr(new Window("hello world", 640,480));
+		this->TWindow = tetahedraWindowPtr(new TetahedraWindow());
 		
 	}
 	catch (application_exception& exception)

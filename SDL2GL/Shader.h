@@ -7,6 +7,7 @@
 #include <memory>
 #include "Utils.h"
 #include <exception>
+#include <map>
 
 class gl_shader_exception : public std::runtime_error
 {
@@ -37,3 +38,4 @@ private:
 };
 
 typedef Shader::shaderPtr shaderPtr;
+extern std::map<std::string, shaderPtr> shader_db;
