@@ -34,20 +34,28 @@ class Window
 {
 public:
 	typedef std::shared_ptr<Window> windowPtr;
+	Window();
 	Window(const std::string &title, int x, int y);
 	Window(const std::string &title, int x, int y, int width, int height);
 	~Window();
 	void Update(SDL_Event e,float dTime);
 	void EventHandler(SDL_Event e);
-	void Draw(float _dtime);
+	virtual void Draw(float _dtime);
 	virtual void Init();
+	GLuint GetSDLWindowID()	{	return sdlWindowID; }
+	SDL_GLContext GetSDLContext() {	return sdlGLContext; }
+	SDL_Window *GetSDLWindow() {	return sdlWindow; }
+protected:
+	cameraPtr sdlCamera;
+	bool IsInitialized() {
+		return initialized;
+	}
 private: 
 	bool initialized = false;
 	void InitRenderer();
 	SDL_Window * sdlWindow;
 	SDL_GLContext sdlGLContext;
 	Uint32 sdlWindowID;
-	cameraPtr sdlCamera;
 	shaderPtr winShader;
 	scenePtr scene;
 	int wWidth, wHeight; // windows size, resizable

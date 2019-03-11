@@ -2,6 +2,7 @@
 
 #define GL3_PROTOTYPES 1
 #include "Window.h"
+#include "TetahedraWindows.h"
 
 class application_exception : public std::runtime_error
 {
@@ -20,5 +21,6 @@ public:
 	void Stop();
 private:
 	bool active;
-	Window *window;
+	windowPtr window;
+	tetahedraWindowPtr TWindow;
 };

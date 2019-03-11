@@ -43,12 +43,12 @@ class Mesh
 	unsigned int VAO;
 	unsigned int VBO;
 	unsigned int IND;
-	unsigned int TXR; // for textures indexs
 public:
 	typedef std::shared_ptr<Mesh> meshPtr;
 	Mesh(std::vector<stVertexData> *vd, 
 		 std::vector<unsigned int>*id, 
 		 materialPtr material);
+	Mesh() {}
 	~Mesh();
 	void draw(unsigned int programId);
 };

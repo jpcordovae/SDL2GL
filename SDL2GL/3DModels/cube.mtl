@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Blender MTL File: 'untitled.blend'
+=======
+# Blender MTL File: 'None'
+>>>>>>> e2e782c54e00a24e41fb9a52f8da7387023934b2
 # Material Count: 3
 
 newmtl Material
@@ -10,9 +14,15 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
 map_Kd D:\\Software\\Haption\\SDL2GL\\SDL2GL\\Texture\\chalk-156429.jpg
 
 newmtl MaterialFloor
+=======
+map_Kd -s 3.000000 3.000000 0.000000 C:\\Users\\jpcordovae\\Desktop\\SDL2GL\\SDL2GL\\Texture\\glass-ball,-hand-189214.jpg
+
+newmtl Material.001
+>>>>>>> e2e782c54e00a24e41fb9a52f8da7387023934b2
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
@@ -21,9 +31,15 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
 map_Kd D:\\Software\\Haption\\SDL2GL\\SDL2GL\\Texture\\papel_azul.jpg
 
 newmtl icomaterial
+=======
+map_Kd C:\\Users\\jpcordovae\\Desktop\\SDL2GL\\SDL2GL\\Texture\\ferris-wheel,-sunset-over-the-beach,-sea,-sand-160719.jpg
+
+newmtl mflaf
+>>>>>>> e2e782c54e00a24e41fb9a52f8da7387023934b2
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
@@ -32,4 +48,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
 map_Kd D:\Software\Haption\SDL2GL\SDL2GL\Texture\black-color-186556.jpg
+=======
+map_Kd C:\\Users\\jpcordovae\\Desktop\\SDL2GL\\SDL2GL\\Texture\\historic-clocks,-water,-bubbles-189354.jpg
+>>>>>>> e2e782c54e00a24e41fb9a52f8da7387023934b2
