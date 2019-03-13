@@ -8,8 +8,9 @@
 
 Application* Application::applicationInstance =nullptr;
 
-Application::Application() 
+Application::Application(int _argc, char *_argv[]) 
 {
+	set_command_line(_argc,_argv);
 	try {
 		this->active = true;
 
@@ -34,7 +35,7 @@ Application::Application()
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		
 		this->window = windowPtr(new Window("hello world", 640,480));
-		this->TWindow = tetahedraWindowPtr(new TetahedraWindow());
+		this->TWindow = tetahedraWindowPtr(new TetahedraWindow(argc,argv));
 		
 	}
 	catch (application_exception& exception)
@@ -76,11 +77,33 @@ Application::Application()
 	
 }
 
+void Application::set_command_line(int _argc, char *_argv[])
+{
+	size_t index = 0;
+	if (argv == nullptr)
+	{
+		argv = (char **)malloc(_argc);
+		for (int i = 0; i < _argc; i++)
+		{
+			int size = strlen(_argv[i]);
+			argv[i] = (char *) malloc(size+1);
+			ZeroMemory(argv[i], size+1);
+			memcpy(argv[i], _argv[i], size+1);
+		}
+	}
+	argc = _argc;
+}
+
 Application* Application::Instance()
+{
+	return Application::applicationInstance;
+}
+
+Application* Application::Instance(int _argc, char *_argv[])
 {
 	if (Application::applicationInstance == nullptr)
 	{
-		Application::applicationInstance = new Application();
+		Application::applicationInstance = new Application(_argc,_argv);
 	}
 	return Application::applicationInstance;
 }

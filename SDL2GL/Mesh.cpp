@@ -61,21 +61,14 @@ void Mesh::draw(unsigned int programId)
 {
 	GLCall(glUseProgram(programId));
 	GLint text_diffuse_loc = glGetUniformLocation(programId,"texture_diffuse");
-<<<<<<< HEAD
 	GLuint id = (GLuint) m_material->m_texture_diffuse->GetID();
 	GLCall(glUniform1i(text_diffuse_loc,id));
 	GLCall(glActiveTexture(GL_TEXTURE0 + id));
 	GLCall(glBindTexture(GL_TEXTURE_2D,text_diffuse_loc));
-=======
-	glUniform1i(text_diffuse_loc,0);
-	glActiveTexture(GL_TEXTURE0 );
-	glBindTexture(GL_TEXTURE_2D, m_material->m_textures_diffuse->GetID());
-
->>>>>>> e2e782c54e00a24e41fb9a52f8da7387023934b2
 
 	GLCall(glBindVertexArray(VAO));
-	//GLCall(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
-	GLCall(glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0));
+	GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0));
+	//GLCall(glDrawElements(GL_LINES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0));
 
 	GLCall(glBindVertexArray(0u));
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0));

@@ -10,7 +10,7 @@ class TetahedraWindow : protected Window
 {
 public:
 	typedef std::shared_ptr<TetahedraWindow> tetahedraWindowPtr;
-	TetahedraWindow();
+	TetahedraWindow(int argc, char *argv[]);
 	~TetahedraWindow();
 	void Draw(float _dtime);
 	void UpdateSimulation(double time_now);

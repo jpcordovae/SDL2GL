@@ -1,10 +1,10 @@
 #include "TetahedraWindows.h"
 
-TetahedraWindow::TetahedraWindow()
+TetahedraWindow::TetahedraWindow(int argc, char **argv)
 {
 	simulation_running = false;
-	char switches[] = "tetgen.exe -q1.1Va1 -g example.poly";
-	if (!b.parse_commandline(switches)) {
+	//char **tmp = (char **) { "-gq1.41" , "D:\Software\Haption\SDL2GL\SDL2GL\3DModels\piece.msh" };
+	if (!b.parse_commandline(argc,argv)) {
 		terminatetetgen(NULL, 10);
 	}
 

@@ -12,14 +12,18 @@ public:
 
 class Application
 {
-	Application();
+	Application(int _argc, char *argv[]);
 	~Application();
 	static Application* applicationInstance;
 public:
+	static Application* Instance(int _argc, char *_argv[]);
 	static Application* Instance();
+	void set_command_line(int _argc, char *_argv[]);
 	bool Run();
 	void Stop();
 private:
+	int argc;
+	char **argv;
 	bool active;
 	windowPtr window;
 	tetahedraWindowPtr TWindow;
