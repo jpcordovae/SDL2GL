@@ -38,32 +38,31 @@ public:
 	Window(const std::string &title, int x, int y);
 	Window(const std::string &title, int x, int y, int width, int height);
 	~Window();
-	void Update(SDL_Event e,float dTime);
 	void EventHandler(SDL_Event e);
 	virtual void Draw(float _dtime);
-	virtual void Init();
 	GLuint GetSDLWindowID()	{	return sdlWindowID; }
 	SDL_GLContext GetSDLContext() {	return sdlGLContext; }
 	SDL_Window *GetSDLWindow() {	return sdlWindow; }
+	unsigned int GetWindowWidth() { return wWidth; }
+	unsigned int GetWindowHeight() { return wHeight; }
+	bool Initialized() { return initialized; }
 protected:
 	cameraPtr sdlCamera;
 	bool IsInitialized() {
 		return initialized;
 	}
+	shaderPtr winShader;
 private: 
 	bool initialized = false;
-	void InitRenderer();
 	SDL_Window * sdlWindow;
 	SDL_GLContext sdlGLContext;
+	SDL_Renderer *sdlRenderer;
 	Uint32 sdlWindowID;
-	shaderPtr winShader;
-	scenePtr scene;
+	
 	int wWidth, wHeight; // windows size, resizable
 	Matrices pipeline;
 	// global variables - normally would avoid globals, using in this demo
 	GLuint shaderprogram; // handle for shader program
-	GLuint vao, vbo[2]; // handles for our VAO and two VBOs
-	float r = 0;
 	bool mMouseFocus;
 	bool mKeyboardFocus;
 	bool mWinFocus;

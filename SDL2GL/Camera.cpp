@@ -1,4 +1,5 @@
 #include "camera.h"
+#include <glm/gtx/compatibility.hpp>
 #include <glm/ext/scalar_constants.hpp>
 #include <glm/ext/quaternion_common.hpp>
 #include <glm/gtx/euler_angles.hpp>
@@ -107,12 +108,15 @@ void Camera::SetIsMoved(bool _isMoved)
 glm::vec3 Camera::getVector()
 {
 	//Google->spherical to cartesian
- 	return (glm::vec3(-cos(camPitch*M_PI/180.0)*sin(camYaw*M_PI/180.0),sin(camPitch*M_PI/180.0),-cos(camPitch*M_PI/180.0)*cos(camYaw*M_PI/180.0)));
+ 	return glm::vec3(	-cos(camPitch*M_PI/180.0)*sin(camYaw*M_PI/180.0),
+						sin(camPitch*M_PI/180.0),
+						-cos(camPitch*M_PI/180.0)*cos(camYaw*M_PI/180.0))*8.0f;
 }
 
 glm::vec3 Camera::getLocation()
 {
-	return loc;
+	return getVector();
+	//return loc;
 }
 
 glm::mat4 Camera::LookAt(glm::vec3 _eye, glm::vec3 _to, glm::vec3 _up)
@@ -178,6 +182,7 @@ bool Camera::isMouseIn()
 		
 void Camera::setLocation(glm::vec3 vec)
 {
+	this->distance = glm::length(vec);
 	loc = vec;
 }
 
@@ -201,4 +206,10 @@ void Camera::setSpeed(float mv,float mov)
 bool Camera::isMoved()
 {
 	return ismoved;
+}
+
+void Camera::setDistance(float dist)
+{
+	this->distance = dist;
+	loc = glm::normalize(loc)*dist;
 }

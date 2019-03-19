@@ -13,9 +13,9 @@ std::ostream& operator<<(std::ostream& os, const  glm::vec3 &vector);
 
 #define ASSERTGL(x) if(!(x)) __debugbreak();
 
-#define GLCall(x)	GLClearError();\
-					x;\
-					ASSERTGL(GLLogCall(#x,__FILE__,__LINE__));
+#define GLCall(x)	x;\
+					ASSERTGL(GLLogCall(#x,__FILE__,__LINE__));\
+					GLClearError();
 
 void GLClearError();
 bool GLLogCall(const char *function, const char *file, int line);

@@ -2111,9 +2111,6 @@ public:
   void outmesh2medit(char*);
   void outmesh2vtk(char*);
 
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
 //                                                                           //
 // Constructor & destructor                                                  //
@@ -2185,7 +2182,6 @@ public:
     flip23count = flip32count = flip44count = flip41count = 0l;
     flip22count = flip31count = 0l;
     totalworkmemory = 0l;
-
 
   } // tetgenmesh()
 

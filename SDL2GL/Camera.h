@@ -16,7 +16,10 @@
 class Camera{
 private:
 	glm::vec3 loc;
-	float camPitch,camYaw;
+	glm::vec3 init_position;
+	glm::vec3 init_direction;
+	glm::vec3 init_up;
+	float camPitch,camYaw,distance;
 	float movevel;
 	float mousevel;
 	bool mi,ismoved;
@@ -46,11 +49,13 @@ public:
 	float GetFar();
 	void SetFar(float _far);
 	float getPitch();
+	void setPitch(float _pitch) { camPitch = _pitch; };
 	float getYaw();
+	void setYaw(float _yaw) { camYaw = _yaw; };
 	float getMovevel();
 	float getMousevel();
 	bool isMouseIn();
-		
+	void setDistance(float dist);
 	void setLocation(glm::vec3 vec);
 	void lookAt(float pitch,float yaw);
 	void mouseIn(bool b);

@@ -11,25 +11,9 @@
 
 std::list<windowPtr> windowsContainer;
 
-Window::Window()
+Window::Window():Window("void title",100, 100, 800, 600)
 {
-	this->sdlWindow = SDL_CreateWindow("void title",100, 100, 800, 600,SDL_WINDOWS_FLAGS);
 	
-	if (this->sdlWindow == nullptr)
-	{
-		throw window_exception(SDL_GetError());
-	}
-	
-	this->wWidth = 800;
-	this->wHeight = 600;
-	
-	sdlCamera = cameraPtr(new Camera());
-	this->InitRenderer();
-	
-	sdlWindowID = SDL_GetWindowID(this->sdlWindow);
-	initialized = true;
-	
-	windowsContainer.emplace_back(std::shared_ptr<Window>(this));
 }
 
 Window::Window(const std::string &title, int x, int y, int width, int height)
@@ -41,100 +25,59 @@ Window::Window(const std::string &title, int x, int y, int width, int height)
 	{
 		throw window_exception(SDL_GetError());
 	}
+
+	this->wWidth = width;
+	this->wHeight = height;
 	
-	this->wWidth = width;
-	this->wHeight = height;
-	sdlCamera = cameraPtr(new Camera());
-	this->InitRenderer();
 	sdlWindowID = SDL_GetWindowID(this->sdlWindow);
-	initialized = true;
-	windowsContainer.emplace_back(std::shared_ptr<Window>(this)); // add windows to the windows container managed by the aplication.
-}
 
-Window::Window(const std::string &title, int width, int height)
-{
-	this->sdlWindow = SDL_CreateWindow(title.c_str(), 
-										SDL_WINDOWPOS_CENTERED, 
-										SDL_WINDOWPOS_CENTERED, 
-										width, height, SDL_WINDOWS_FLAGS);
+	this->sdlGLContext = SDL_GL_CreateContext(this->sdlWindow);
 
-	if (this->sdlWindow == nullptr)
+	if (this->sdlGLContext == nullptr)
 	{
-		throw window_exception(SDL_GetError());
+		throw gl_context_exception(SDL_GetError());
 	}
-
-	this->wWidth = width;
-	this->wHeight = height;
-	sdlCamera = cameraPtr(new Camera(glm::vec3(0.0f, 0.0f, 0.0f)));//DEFAULT CAMERA POSITION
-	sdlWindowID = SDL_GetWindowID(this->sdlWindow); 
-	this->InitRenderer();
+	
+	SDL_GL_MakeCurrent(this->sdlWindow, this->sdlGLContext);
+	// glewInit must be called after each context change
 	GLenum status = glewInit();
 	if (status != GLEW_OK)
 	{
 		std::cerr << "GLEW Error: " << glewGetErrorString(status) << "\n";
 		exit(1);
 	}
-	//LoadShaders();
-	this->Init();
-	windowsContainer.emplace_back(std::shared_ptr<Window>(this)); // add windows to the windows container managed by the aplication.
+
+	if (SDL_GL_SetSwapInterval(1) < 0)
+	{
+		throw gl_context_exception(SDL_GetError());
+	}
+	
+	sdlCamera = cameraPtr(new Camera(glm::vec3(0.0f, 0.0f, 0.0f)));
+
 	initialized = true;
+
+	windowsContainer.emplace_back(this); // add windows to the windows container managed by the aplication.
 }
 
-void Window::Init()
+Window::Window(const std::string &title, int width, int height) :Window(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,width,height)
 {
-	SDL_GL_MakeCurrent(this->sdlWindow, this->sdlGLContext);
 
-	if ((this->winShader = shaderPtr(new Shader("Shaders/vertex.vert", "Shaders/fragment.frag"))) == nullptr)
-	{
-		throw gl_shader_exception("error creating shader!!!");
-	}
-
-	std::string scene_file = "3DModels/cube.obj";
-	if (!std::experimental::filesystem::exists(scene_file.c_str()))
-	{
-		throw window_exception("scene file not found (experimental)");
-	}
-
-	this->scene = scenePtr(new Scene(scene_file.c_str()));
-	mMouseFocus = false;
-	// print out some info about the graphics drivers
-	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-	std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-	std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
-	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
-
-	GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glDepthFunc(GL_LESS));
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
-	GLCall(glEnable(GL_BLEND));
-	GLCall(glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA));
-}
-
-void Window::InitRenderer()
-{
-	this->sdlGLContext = SDL_GL_CreateContext(this->sdlWindow) ;
-	if (this->sdlGLContext == nullptr)
-	{
-		throw gl_context_exception(SDL_GetError());
-	}
-	if ( SDL_GL_SetSwapInterval(1) < 0)
-	{
-		throw gl_context_exception(SDL_GetError());
-	}
 }
 
 void Window::Draw(float _dTime)
 {
 	if (!this->initialized || !((bool)sdlCamera)) return;
-	SDL_GL_MakeCurrent(this->sdlWindow, this->sdlGLContext);
+	SDL_Window * winTmp = this->GetSDLWindow();
+	SDL_GLContext winContext = this->GetSDLContext();
+	SDL_GL_MakeCurrent(winTmp, winContext);
 	glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
-	
+	/*
 	static float rotAngle = 0.0f;
-	glm::mat4 model = glm::rotate(rotAngle+=0.01f,glm::vec3(0.0f,1.0f,0.0f));
-	sdlCamera->setLocation(glm::vec3(0.0f, 0.0f, 8.0f));
-	glm::mat4 view = glm::lookAt(sdlCamera->getLocation(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 4.0, 0.0));
-	glm::mat4 projection = glm::perspective(45.0f, 1.0f * wWidth / wHeight, 0.1f, 100.0f);
+	//glm::mat4 model = glm::rotate(rotAngle+=0.01f,glm::vec3(0.0f,1.0f,0.0f));
+	glm::mat4 model = glm::rotate(rotAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+	//sdlCamera->setLocation(glm::vec3(0.0f, 0.0f, 8.0f));
+	glm::mat4 view = glm::lookAt(sdlCamera->getVector(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 4.0, 0.0));
+	glm::mat4 projection = glm::perspective(45.0f, 1.0f * wWidth / wHeight, 0.1f, 10000.0f);
 	glm::mat4 modelView = view * model;
 	glm::mat4 modelViewProjectionMatrix = projection * view * model;
 	glm::mat3 normalMatrix = glm::mat3(modelView);
@@ -156,15 +99,17 @@ void Window::Draw(float _dTime)
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	
 	this->scene->Draw(this->winShader->GetShaderProgram());
-
-	SDL_GL_SwapWindow(sdlWindow); // swap buffers
+	*/
+	SDL_GL_SwapWindow(this->GetSDLWindow()); // swap buffers
 }
 
 void Window::EventHandler(SDL_Event e)
 {
+	if (e.window.windowID != this->GetSDLWindowID()) return;
 	switch (e.type)
 	{
 	case SDL_WINDOWEVENT:
+		if (e.window.windowID != this->GetSDLWindowID()) return;
 		switch (e.window.event)
 		{
 			//Window appeared
@@ -192,14 +137,14 @@ void Window::EventHandler(SDL_Event e)
 		case SDL_WINDOWEVENT_ENTER:
 			mMouseFocus = true;
 			sdlCamera->mouseIn(true);
-			std::cout << "mouse in" << std::endl;
+			//std::cout << "mouse in" << std::endl;
 			//updateCaption = true;
 			break;
 			//Mouse exit
 		case SDL_WINDOWEVENT_LEAVE:
 			if (mMouseFocus)
 			{
-				std::cout << "mouse out" << std::endl;
+				//std::cout << "mouse out" << std::endl;
 				mMouseFocus = false;
 				sdlCamera->mouseIn(false);
 				//updateCaption = true;
@@ -208,7 +153,7 @@ void Window::EventHandler(SDL_Event e)
 			//Keyboard focus gained
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
 			mKeyboardFocus = true;
-			std::cout << "win focus gained" << std::endl;
+			//std::cout << "win focus gained" << std::endl;
 			mWinFocus = true;
 			//updateCaption = true;
 			break;
@@ -216,7 +161,8 @@ void Window::EventHandler(SDL_Event e)
 		case SDL_WINDOWEVENT_FOCUS_LOST:
 			mKeyboardFocus = false;
 			mWinFocus = false;
-			std::cout << "win focus lost" << std::endl;
+			sdlCamera->SetIsMoved(false);
+			//std::cout << "win focus lost" << std::endl;
 			//updateCaption = true;
 			break;
 			//Window minimized
@@ -241,10 +187,12 @@ void Window::EventHandler(SDL_Event e)
 		switch (e.button.button)
 		{
 		case SDL_BUTTON_RIGHT:
-			if (mMouseFocus)
+			if (mMouseFocus && mWinFocus)
 			{
 				sdlCamera->SetIsMoved(true);
+				/*#ifdef _DEBUG
 				std::cout << "right mouse button down." << std::endl;
+				#endif*/
 				SDL_ShowCursor(SDL_DISABLE);
 			}
 			break;
@@ -254,28 +202,31 @@ void Window::EventHandler(SDL_Event e)
 		switch (e.button.button)
 		{
 		case SDL_BUTTON_RIGHT:
-			if (mMouseFocus)
+			if (mMouseFocus && mWinFocus)
 			{
-				sdlCamera->SetIsMoved(false);
+				sdlCamera->SetIsMoved(false); 
+				/*#ifdef _DEBUG
 				std::cout << "right mouse button up." << std::endl;
+				#endif*/
 				SDL_ShowCursor(SDL_ENABLE);
 			}
 			break;
 		}
 		break;
 	case SDL_MOUSEMOTION:
-		if (sdlCamera->isMoved()) 
+		if (sdlCamera->isMoved() && mWinFocus)
 		{
 			int dx = e.motion.xrel;
 			int dy = e.motion.yrel;
-			
-#ifdef _DEBUG
+			sdlCamera->setPitch(sdlCamera->getPitch() + (float)dy);
+			sdlCamera->setYaw(sdlCamera->getYaw()- (float)dx);
+			/*#ifdef _DEBUG
 			std::cout << "mouse moved dx=" << dx << ",dy=" << dy << std::endl;
-#endif
+			#endif*/
 			int MidX, MidY;
-			SDL_GetWindowSize(sdlWindow, &MidX, &MidY);
-			MidX = (int)MidX / 2;
-			MidY = (int)MidY / 2;
+			//SDL_GetWindowSize(sdlWindow, &MidX, &MidY);
+			//MidX = (int)MidX / 2;
+			//MidY = (int)MidY / 2;
 			//SDL_WarpMouseInWindow(sdlWindow, MidX, MidY);
 		}
 		break;
@@ -291,7 +242,9 @@ void Window::EventHandler(SDL_Event e)
 				moveCamera(0.0);
 			moveCameraUp(0.0);*/
 			//this->setLocation(glm::vec3(loc.x + 1, loc.y, loc.z));
+			/*#ifdef _DEBUG
 			std::cout << "SDLK_w : " << std::endl;
+			#endif*/
 			break;
 		case SDLK_s:
 			//this->ismoved = true;
@@ -299,19 +252,25 @@ void Window::EventHandler(SDL_Event e)
 				moveCamera(180.0);
 			moveCameraUp(180.0);*/
 			//this->setLocation(glm::vec3(loc.x - 1, loc.y, loc.z));
+			#ifdef _DEBUG
 			std::cout << "SDLK_s : " << std::endl;
+			#endif
 			break;
 		case SDLK_a:
 			/*this->ismoved = true;
 			moveCamera(90.0);*/
 			//this->setLocation(glm::vec3(loc.x, loc.y, loc.z - 1));
+			#ifdef _DEBUG
 			std::cout << "SDLK_a : " << std::endl;
+			#endif
 			break;
 		case SDLK_d:
 			/*this->ismoved = true;
 			moveCamera(270);*/
 			//this->setLocation(glm::vec3(loc.x, loc.y, loc.z + 1));
+			#ifdef _DEBUG
 			std::cout << "SDLK_d : " << std::endl;
+			#endif
 			break;
 		default:
 			break;

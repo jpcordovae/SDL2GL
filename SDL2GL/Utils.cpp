@@ -24,7 +24,18 @@ std::ostream& operator<<(std::ostream& os, const  glm::vec3 &vector)
 
 void GLClearError()
 {
-	while (glGetError() != GL_NO_ERROR);
+	GLint error_count=0;
+	GLenum last_error = GL_NO_ERROR;
+	while (glGetError() != GL_NO_ERROR)
+	{
+		GLenum tmp = glGetError();
+		if ( last_error !=  tmp) 
+		{
+			std::cout << std::endl;
+			last_error = tmp;
+		}
+		std::cout << '\r' << "GL Error (x" << error_count++ << "): " << last_error;
+	};
 }
 
 bool GLLogCall(const char *function, const char *file, int line)

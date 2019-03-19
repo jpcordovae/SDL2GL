@@ -176,6 +176,7 @@
     <ClInclude Include="TetahedraWindows.h" />
     <ClInclude Include="tetgen.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TexturedWindow.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
@@ -201,12 +202,15 @@
     <ClCompile Include="TetahedraWindows.cpp" />
     <ClCompile Include="tetgen.cxx" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TexturedWindow.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
     <None Include="Shaders\fragment.frag" />
+    <None Include="Shaders\mesh_shader.frag" />
+    <None Include="Shaders\mesh_shader.vert" />
     <None Include="Shaders\quadRender.frag" />
     <None Include="Shaders\quadRender.vert" />
     <None Include="Shaders\vertex.vert" />

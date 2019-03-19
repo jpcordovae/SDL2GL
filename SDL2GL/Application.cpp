@@ -14,10 +14,11 @@ Application::Application(int _argc, char *_argv[])
 	try {
 		this->active = true;
 
-		if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+		if ( SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		{
+			SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
 			throw application_exception(SDL_GetError());
-		}
+		}		
 
 		int flags = IMG_INIT_JPG ;
 		int initted = IMG_Init(flags);
@@ -28,15 +29,15 @@ Application::Application(int _argc, char *_argv[])
 		}
 
 		//Use OpenGL 4.6 core
+		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		
-		this->window = windowPtr(new Window("hello world", 640,480));
-		this->TWindow = tetahedraWindowPtr(new TetahedraWindow(argc,argv));
-		
+
+		window = windowPtr(new Window("hello world", 640,480));
+		this->TWindow = tetahedraWindowPtr(new TetahedraWindow(_argc,_argv));
 	}
 	catch (application_exception& exception)
 	{
@@ -85,7 +86,7 @@ void Application::set_command_line(int _argc, char *_argv[])
 		argv = (char **)malloc(_argc);
 		for (int i = 0; i < _argc; i++)
 		{
-			int size = strlen(_argv[i]);
+			size_t size = strlen(_argv[i]);
 			argv[i] = (char *) malloc(size+1);
 			ZeroMemory(argv[i], size+1);
 			memcpy(argv[i], _argv[i], size+1);
@@ -152,10 +153,18 @@ bool Application::Run()
 			case SDL_MOUSEBUTTONUP:
 				break;
 			}
-			for (windowPtr wp : windowsContainer) wp->EventHandler(event); // update events 
+			for (windowPtr wp : windowsContainer)
+			{
+				wp->EventHandler(event); // update events
+			}
+				 
 		}
 		// draw windows
-		for (windowPtr wp : windowsContainer) wp->Draw(dTime);
+		for (windowPtr wp : windowsContainer)
+		{
+			wp->Draw(dTime);
+		}
+		
 		old_time = now;
 	}
 	return this->active;

@@ -3,6 +3,7 @@
 #define GL3_PROTOTYPES 1
 #include "Window.h"
 #include "TetahedraWindows.h"
+#include "TexturedWindow.h"
 
 class application_exception : public std::runtime_error
 {
@@ -26,5 +27,6 @@ private:
 	char **argv;
 	bool active;
 	windowPtr window;
+	texturedWindowPtr twPtr;
 	tetahedraWindowPtr TWindow;
 };

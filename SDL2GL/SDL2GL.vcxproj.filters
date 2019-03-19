@@ -69,6 +69,9 @@
     <ClInclude Include="TetahedraWindows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TexturedWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -125,6 +128,9 @@
     <ClCompile Include="TetahedraWindows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TexturedWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="test.blend">
@@ -143,5 +149,11 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="Shaders\mesh_shader.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\mesh_shader.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

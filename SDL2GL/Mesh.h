@@ -31,11 +31,25 @@ public:
 
 class Mesh
 {
+	
+public:
+	enum mesh_display { TEXTURED, RAW_MESH, DIFFUSE_COLOR };
+	typedef std::shared_ptr<Mesh> meshPtr;
+	Mesh(std::vector<stVertexData> *vd, std::vector<unsigned int>*id, materialPtr material);
+	void SetMeshData(std::vector<stVertexData> *vd, std::vector<unsigned int>*id, materialPtr material);
+	void SetMeshData(std::vector<stVertexData> *vd, std::vector<unsigned int>*id);
+	Mesh() {}
+	~Mesh();
+	void draw(unsigned int programId);
+	void update_vertices(std::vector<stVertexData> &new_vertices);
+	void SetDisplayType(mesh_display md);
+private:
 	typedef struct {
 		GLuint texture_index;
 		GLuint texture_operation;
 	} st_mesh_texture;
 
+	mesh_display display_type;
 	std::vector<stVertexData> data;
 	materialPtr m_material; // only one material per mesh
 	std::vector<unsigned int> indices;
@@ -43,14 +57,6 @@ class Mesh
 	unsigned int VAO;
 	unsigned int VBO;
 	unsigned int IND;
-public:
-	typedef std::shared_ptr<Mesh> meshPtr;
-	Mesh(std::vector<stVertexData> *vd, 
-		 std::vector<unsigned int>*id, 
-		 materialPtr material);
-	Mesh() {}
-	~Mesh();
-	void draw(unsigned int programId);
 };
 
 typedef Mesh::meshPtr meshPtr;

@@ -43,7 +43,7 @@ int LoadShaders()
 	glBindAttribLocation(program, attrib_position, "i_position");
 	glBindAttribLocation(program, attrib_color, "i_color");
 	glLinkProgram(program);
-
+	return 0;
 }
 
 int temporalDraw(int width, int height)

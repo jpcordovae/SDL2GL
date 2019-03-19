@@ -83,9 +83,13 @@ int Shader::Load()
 
 int Shader::Compile()
 {
-	const char * tempSource = this->vertexSource.c_str();
+	// vertex
+	char * tempSource = (char*) malloc(vertexSource.length()+1);
+	memcpy(tempSource,this->vertexSource.c_str(), vertexSource.length());
+	tempSource[vertexSource.length()] = 0x00;
 	this->vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	GLCall(glShaderSource(this->vertexShader, 1, &tempSource, 0));
+	GLCall(glShaderSource(this->vertexShader, 1, &tempSource, nullptr));
+	delete tempSource;
 	GLCall(glCompileShader(this->vertexShader));
 	GLint compiled=0;  
 	GLCall(glGetShaderiv(this->vertexShader, GL_COMPILE_STATUS, &compiled));
@@ -96,12 +100,15 @@ int Shader::Compile()
 		GLCall(glGetShaderInfoLog(this->vertexShader, maxLength, (GLsizei*)&maxLength, vertexCompileLog));
 		std::cout << "Vertex Shader error: " << std::endl << vertexCompileLog<< std::endl;
 		free(vertexCompileLog);
+		delete tempSource;
 		return -1;
 	}
-
-	tempSource = this->fragmentSource.c_str();
+	// fragment
+	tempSource = (char*)malloc(fragmentSource.length() + 1);
+	memcpy(tempSource, this->fragmentSource.c_str(), fragmentSource.length());
+	tempSource[fragmentSource.length()] = 0x00;
 	this->fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	GLCall(glShaderSource(this->fragmentShader, 1, &tempSource, 0));
+	GLCall(glShaderSource(this->fragmentShader, 1, &tempSource, nullptr));
 	GLCall(glCompileShader(this->fragmentShader));
 	compiled = 0;
 	GLCall(glGetShaderiv(this->fragmentShader, GL_COMPILE_STATUS, &compiled));
@@ -112,8 +119,10 @@ int Shader::Compile()
 		GLCall(glGetShaderInfoLog(this->fragmentShader, maxLength, (GLsizei*)&maxLength, fragmentCompileLog));
 		std::cout << "Fragment Shader error: " << std::endl << fragmentCompileLog << std::endl;
 		free(fragmentCompileLog);
+		delete tempSource;
 		return -2;
 	}
+	delete tempSource;
 	return 1;
 }
 
