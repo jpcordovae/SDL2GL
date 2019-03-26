@@ -10,20 +10,21 @@ uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelViewMatrix;
 uniform mat4 modelViewProjectionMatrix;
-uniform mat4 normalMatrix;
+uniform mat3 normalMatrix;
+uniform vec3 ambientColor;
 
-out vec4 outNormal;
+//out vec3 outNormal;
 //out vec3 outTangent;
-//out vec3 outColor;
+out vec3 outColor;
 out vec2 outUV;
 //out vec3 position;
 
 void main()
 {
 	gl_Position=modelViewProjectionMatrix*vec4(vertex,1.0);
-	outNormal=normalMatrix*vec4(normal,1.0);
+	//position=vec3(modelViewMatrix*vec4(vertex,1.0));
+	//outNormal=normalMatrix*normal;
 	//outTangent=normalMatrix*outTangent;
-	//outColor=color;
+	outColor=ambientColor;
 	outUV=UV;
 }
-

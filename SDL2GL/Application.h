@@ -27,6 +27,6 @@ private:
 	char **argv;
 	bool active;
 	windowPtr window;
-	texturedWindowPtr twPtr;
+	texturedWindowPtr txtwPtr;
 	tetahedraWindowPtr TWindow;
 };

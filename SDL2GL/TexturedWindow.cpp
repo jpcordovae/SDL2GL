@@ -4,14 +4,22 @@
 
 TexturedWindow::TexturedWindow()
 {
-
+	Init();
 }
 
 void TexturedWindow::Draw(float _dTime)
 {
 	if (!this->IsInitialized() || !((bool)sdlCamera)) return;
 	SDL_GL_MakeCurrent(this->GetSDLWindow(), this->GetSDLContext());
-	
+	///////////////////////////////////////
+	// glewInit must be called after each context change
+	GLenum glew_status = glewInit();
+	if (glew_status != GLEW_OK)
+	{
+		std::cerr << "GLEW Error: " << glewGetErrorString(glew_status) << "\n";
+		throw window_exception("glewInit() fail");
+	}
+	///////////////////////////////////////
 	glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 
 	static float rotAngle = 0.0f;
@@ -24,7 +32,10 @@ void TexturedWindow::Draw(float _dTime)
 	glm::mat4 modelViewProjectionMatrix = projection * view * model;
 	glm::mat3 normalMatrix = glm::mat3(modelView);
 
-	this->winShader->Use();
+	if (!this->winShader->Use())
+	{
+		throw gl_shader_exception("shader use() fail.");
+	}
 
 	int programId = this->winShader->GetShaderProgram();
 
@@ -40,7 +51,7 @@ void TexturedWindow::Draw(float _dTime)
 
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-	this->scene->Draw(this->winShader->GetShaderProgram());
+	this->scene->Draw(programId);
 
 	SDL_GL_SwapWindow(this->GetSDLWindow()); // swap buffers
 }
@@ -61,8 +72,14 @@ void TexturedWindow::Init()
 		throw gl_shader_exception("error creating shader!!!");
 	}
 	//
+	// print out some info about the graphics drivers
+	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+	std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+	std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
+	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
+	//
 	std::string scene_file = "3DModels/cube.obj";
-	
+	//
 	if (!std::experimental::filesystem::exists(scene_file.c_str()))
 	{
 		throw window_exception("scene file not found (experimental)");
@@ -70,18 +87,13 @@ void TexturedWindow::Init()
 	//
 	this->scene = scenePtr(new Scene(scene_file.c_str()));
 
-	// print out some info about the graphics drivers
-	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-	std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-	std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
-	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
-
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glDepthFunc(GL_LESS));
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_BACK);
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	sdlCamera->Location(glm::vec3(0.0f, 0.0f, 8.0f));
 }
 
 TexturedWindow::~TexturedWindow()

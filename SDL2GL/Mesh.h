@@ -11,7 +11,9 @@ struct stVertexData {
 	stVertexData() :position(glm::vec3(0.0f,0.0f,0.0f)),
 					normal(glm::vec3(0.0f, 0.0f, 0.0f)),
 					tangent(glm::vec3(0.0f, 0.0f, 0.0f)),
-					color(glm::vec3(0.0f, 0.0f, 0.0f))
+					color(glm::vec3(0.0f, 0.0f, 0.0f)),
+					mass(glm::vec3(1.0f,1.0f,1.0f)),
+					velocity(glm::vec3(0.0f,0.0f,0.0f))
 	{
 		UV[0] = UV[1] = 0.0f;
 	}
@@ -20,6 +22,9 @@ struct stVertexData {
 	glm::vec3 normal;
 	glm::vec3 tangent;
 	glm::vec3 color;
+	glm::vec3 mass;
+	glm::vec3 velocity;
+
 	float UV[2];
 };
 
@@ -31,9 +36,8 @@ public:
 
 class Mesh
 {
-	
 public:
-	enum mesh_display { TEXTURED, RAW_MESH, DIFFUSE_COLOR };
+	enum mesh_display { TEXTURED, RAW_MESH, RAW_TRIANGLES, DIFFUSE_COLOR };
 	typedef std::shared_ptr<Mesh> meshPtr;
 	Mesh(std::vector<stVertexData> *vd, std::vector<unsigned int>*id, materialPtr material);
 	void SetMeshData(std::vector<stVertexData> *vd, std::vector<unsigned int>*id, materialPtr material);

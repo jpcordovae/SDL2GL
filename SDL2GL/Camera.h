@@ -23,6 +23,8 @@ private:
 	float movevel;
 	float mousevel;
 	bool mi,ismoved;
+	bool rotating;
+	bool zooming;
 	void lockCamera();
 	void moveCamera(float dir);
 	void moveCameraUp(float dir);
@@ -54,10 +56,16 @@ public:
 	void setYaw(float _yaw) { camYaw = _yaw; };
 	float getMovevel();
 	float getMousevel();
+	void Rotating(bool _rot) { rotating = _rot; }
+	bool Rotating(void) { return rotating; }
 	bool isMouseIn();
-	void setDistance(float dist);
-	void setLocation(glm::vec3 vec);
-	void lookAt(float pitch,float yaw);
+	void SetDistance(float dist);
+	float GetDistance(void) { return distance; }
+	void Location(glm::vec3 vec);
+	glm::vec3 Location(void);
+	void Zooming(bool _zooming) { zooming = _zooming; }
+	bool Zooming(void) { return zooming;  }
+	void LookAt(float pitch,float yaw);
 	void mouseIn(bool b);
 	void setSpeed(float mv,float mov);
 		

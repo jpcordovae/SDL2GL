@@ -155,7 +155,6 @@ public:
     int *elist;
   } vorofacet;
 
-
   // Additional parameters associated with an input (or mesh) vertex.
   //   These informations are provided by CAD libraries. 
   typedef struct {

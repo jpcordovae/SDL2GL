@@ -18,9 +18,9 @@ Application::Application(int _argc, char *_argv[])
 		{
 			SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
 			throw application_exception(SDL_GetError());
-		}		
+		}
 
-		int flags = IMG_INIT_JPG ;
+		int flags = IMG_INIT_JPG;
 		int initted = IMG_Init(flags);
 		if ((initted&flags) != flags) {
 			printf("IMG_Init: Failed to init required jpg and png support!\n");
@@ -36,8 +36,9 @@ Application::Application(int _argc, char *_argv[])
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-		window = windowPtr(new Window("hello world", 640,480));
+		//window = windowPtr(new Window("hello world", 640,480));
 		this->TWindow = tetahedraWindowPtr(new TetahedraWindow(_argc,_argv));
+		//this->txtwPtr = texturedWindowPtr(new TexturedWindow());
 	}
 	catch (application_exception& exception)
 	{

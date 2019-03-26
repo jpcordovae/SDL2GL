@@ -21,6 +21,7 @@ Window::Window(const std::string &title, int x, int y, int width, int height)
 	this->sdlWindow = SDL_CreateWindow(title.c_str(), 
 										x, y, width, height, 
 										SDL_WINDOWS_FLAGS);
+
 	if (this->sdlWindow == nullptr)
 	{
 		throw window_exception(SDL_GetError());
@@ -39,6 +40,7 @@ Window::Window(const std::string &title, int x, int y, int width, int height)
 	}
 	
 	SDL_GL_MakeCurrent(this->sdlWindow, this->sdlGLContext);
+
 	// glewInit must be called after each context change
 	GLenum status = glewInit();
 	if (status != GLEW_OK)
@@ -52,14 +54,15 @@ Window::Window(const std::string &title, int x, int y, int width, int height)
 		throw gl_context_exception(SDL_GetError());
 	}
 	
-	sdlCamera = cameraPtr(new Camera(glm::vec3(0.0f, 0.0f, 0.0f)));
+	sdlCamera = cameraPtr(new Camera(glm::vec3(0.0f, 0.0f, 8.0f)));
 
 	initialized = true;
 
 	windowsContainer.emplace_back(this); // add windows to the windows container managed by the aplication.
 }
 
-Window::Window(const std::string &title, int width, int height) :Window(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,width,height)
+Window::Window(const std::string &title, int width, int height) 
+	: Window(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,width,height)
 {
 
 }
@@ -71,6 +74,7 @@ void Window::Draw(float _dTime)
 	SDL_GLContext winContext = this->GetSDLContext();
 	SDL_GL_MakeCurrent(winTmp, winContext);
 	glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+
 	/*
 	static float rotAngle = 0.0f;
 	//glm::mat4 model = glm::rotate(rotAngle+=0.01f,glm::vec3(0.0f,1.0f,0.0f));
@@ -100,16 +104,17 @@ void Window::Draw(float _dTime)
 	
 	this->scene->Draw(this->winShader->GetShaderProgram());
 	*/
+
 	SDL_GL_SwapWindow(this->GetSDLWindow()); // swap buffers
 }
 
 void Window::EventHandler(SDL_Event e)
 {
 	if (e.window.windowID != this->GetSDLWindowID()) return;
+
 	switch (e.type)
 	{
 	case SDL_WINDOWEVENT:
-		if (e.window.windowID != this->GetSDLWindowID()) return;
 		switch (e.window.event)
 		{
 			//Window appeared
@@ -184,17 +189,15 @@ void Window::EventHandler(SDL_Event e)
 		}
 		break;
 	case SDL_MOUSEBUTTONDOWN:
+		
 		switch (e.button.button)
 		{
 		case SDL_BUTTON_RIGHT:
-			if (mMouseFocus && mWinFocus)
-			{
-				sdlCamera->SetIsMoved(true);
-				/*#ifdef _DEBUG
-				std::cout << "right mouse button down." << std::endl;
-				#endif*/
-				SDL_ShowCursor(SDL_DISABLE);
-			}
+			sdlCamera->Rotating(true);
+			SDL_ShowCursor(SDL_DISABLE);
+			break;
+		case SDL_BUTTON_MIDDLE:
+			sdlCamera->Zooming(true);
 			break;
 		}
 		break;
@@ -202,32 +205,27 @@ void Window::EventHandler(SDL_Event e)
 		switch (e.button.button)
 		{
 		case SDL_BUTTON_RIGHT:
-			if (mMouseFocus && mWinFocus)
-			{
-				sdlCamera->SetIsMoved(false); 
-				/*#ifdef _DEBUG
-				std::cout << "right mouse button up." << std::endl;
-				#endif*/
-				SDL_ShowCursor(SDL_ENABLE);
-			}
+			sdlCamera->Rotating(false);
+			SDL_ShowCursor(SDL_ENABLE);
+			break;
+		case SDL_BUTTON_MIDDLE:
+			sdlCamera->Zooming(false);
 			break;
 		}
 		break;
 	case SDL_MOUSEMOTION:
-		if (sdlCamera->isMoved() && mWinFocus)
+		if (sdlCamera->Rotating())
 		{
-			int dx = e.motion.xrel;
-			int dy = e.motion.yrel;
-			sdlCamera->setPitch(sdlCamera->getPitch() + (float)dy);
-			sdlCamera->setYaw(sdlCamera->getYaw()- (float)dx);
-			/*#ifdef _DEBUG
-			std::cout << "mouse moved dx=" << dx << ",dy=" << dy << std::endl;
-			#endif*/
-			int MidX, MidY;
+			sdlCamera->setPitch(sdlCamera->getPitch() + (float)e.motion.yrel);
+			sdlCamera->setYaw(sdlCamera->getYaw()- (float)e.motion.xrel);
 			//SDL_GetWindowSize(sdlWindow, &MidX, &MidY);
 			//MidX = (int)MidX / 2;
 			//MidY = (int)MidY / 2;
 			//SDL_WarpMouseInWindow(sdlWindow, MidX, MidY);
+		}
+		if (sdlCamera->Zooming())
+		{
+			sdlCamera->SetDistance(sdlCamera->GetDistance() + (float)e.motion.yrel);
 		}
 		break;
 	case SDL_KEYDOWN:

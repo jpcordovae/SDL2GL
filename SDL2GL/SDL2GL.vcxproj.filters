@@ -155,5 +155,11 @@
     <None Include="Shaders\mesh_shader.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Shaders\mesh_surface.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\mesh_surface.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

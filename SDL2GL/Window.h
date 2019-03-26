@@ -52,6 +52,7 @@ protected:
 		return initialized;
 	}
 	shaderPtr winShader;
+	int wWidth, wHeight; // windows size, resizable
 private: 
 	bool initialized = false;
 	SDL_Window * sdlWindow;
@@ -59,10 +60,10 @@ private:
 	SDL_Renderer *sdlRenderer;
 	Uint32 sdlWindowID;
 	
-	int wWidth, wHeight; // windows size, resizable
 	Matrices pipeline;
 	// global variables - normally would avoid globals, using in this demo
 	GLuint shaderprogram; // handle for shader program
+	bool mMiddButtonPressed;
 	bool mMouseFocus;
 	bool mKeyboardFocus;
 	bool mWinFocus;

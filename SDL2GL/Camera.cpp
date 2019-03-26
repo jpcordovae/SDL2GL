@@ -43,7 +43,10 @@ Camera::Camera()
 	mZoom = 45.0f;
 	mNear = 0.1f;
 	mFar = 1000.0f;
+	rotating = false;
+	zooming = false;
 }
+
 Camera::Camera(glm::vec3 l)
 {
 	loc = l;
@@ -56,6 +59,8 @@ Camera::Camera(glm::vec3 l)
 	mZoom = 45.0f;
 	mNear = 0.1f;
 	mFar = 1000.0f;
+	rotating = false;
+	zooming = false;
 }
 
 Camera::Camera(glm::vec3 l,float yaw,float pitch)
@@ -70,6 +75,8 @@ Camera::Camera(glm::vec3 l,float yaw,float pitch)
 	mZoom = 45.0f;
 	mNear = 0.1f;
 	mFar = 1000.0f;
+	rotating = false;
+	zooming = false;
 }
 
 Camera::Camera(glm::vec3 l,float yaw,float pitch,float mv,float mov)
@@ -84,6 +91,8 @@ Camera::Camera(glm::vec3 l,float yaw,float pitch,float mv,float mov)
 	mZoom = 45.0f;
 	mNear = 0.1f;
 	mFar = 1000.0f;
+	rotating = false;
+	zooming = false;
 }
 
 void Camera::SetIsMoved(bool _isMoved)
@@ -110,7 +119,7 @@ glm::vec3 Camera::getVector()
 	//Google->spherical to cartesian
  	return glm::vec3(	-cos(camPitch*M_PI/180.0)*sin(camYaw*M_PI/180.0),
 						sin(camPitch*M_PI/180.0),
-						-cos(camPitch*M_PI/180.0)*cos(camYaw*M_PI/180.0))*8.0f;
+						-cos(camPitch*M_PI/180.0)*cos(camYaw*M_PI/180.0))*distance;
 }
 
 glm::vec3 Camera::getLocation()
@@ -180,13 +189,13 @@ bool Camera::isMouseIn()
 	return mi;
 }
 		
-void Camera::setLocation(glm::vec3 vec)
+void Camera::Location(glm::vec3 vec)
 {
 	this->distance = glm::length(vec);
 	loc = vec;
 }
 
-void Camera::lookAt(float pitch,float yaw)
+void Camera::LookAt(float pitch,float yaw)
 {
 	camPitch=pitch;
 	camYaw=yaw;
@@ -208,7 +217,7 @@ bool Camera::isMoved()
 	return ismoved;
 }
 
-void Camera::setDistance(float dist)
+void Camera::SetDistance(float dist)
 {
 	this->distance = dist;
 	loc = glm::normalize(loc)*dist;

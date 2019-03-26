@@ -84,6 +84,10 @@ void Mesh::draw(unsigned int programId)
 		GLCall(glBindVertexArray(VAO));
 		GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0));
 		break;
+	case RAW_TRIANGLES:
+		GLCall(glBindVertexArray(VAO));
+		GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0));
+		break;
 	case RAW_MESH:
 	default:
 		GLCall(glBindVertexArray(VAO));

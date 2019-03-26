@@ -31,10 +31,10 @@
        <targetName>launch</targetName>
        <launch_app.app_to_launch>D:\Software\Haption\SDL2GL\x64\Debug\SDL2GL.exe</launch_app.app_to_launch>
        <launch_app.working_folder>D:\Software\Haption\SDL2GL\SDL2GL</launch_app.working_folder>
-       <launch_app.app_parameters>-pgq1.41 &quot;D:\Software\Haption\SDL2GL\SDL2GL\3DModels\piece.msh&quot;</launch_app.app_parameters>
-       <launch_app.environment>PATH=;%PATH%&#13;
-PATH=;%PATH%</launch_app.environment>
-       <launch_app.environment_prepend>PATH=;</launch_app.environment_prepend>
+       <launch_app.app_parameters>-pgq1.1m D:\Software\Haption\SDL2GL\SDL2GL\3DModels\socket.poly</launch_app.app_parameters>
+       <launch_app.environment>PATH=C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019\windows\redist\intel64\compiler;%PATH%&#13;
+PATH=C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019\windows\redist\intel64\compiler;%PATH%</launch_app.environment>
+       <launch_app.environment_prepend>PATH=C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019\windows\redist\intel64\compiler;</launch_app.environment_prepend>
        <use_app_dir_as_work_dir type="bool">false</use_app_dir_as_work_dir>
        <result_directory.path>D:\Software\Haption\SDL2GL\SDL2GL\My Inspector Results - SDL2GL\r@@@{at}</result_directory.path>
        <search_directories>
@@ -84,7 +84,10 @@ PATH=;%PATH%</launch_app.environment>
          <value>bin=C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319</value>
         </item>
         <item>
-         <value>bin=C:\Windows\System32\DriverStore\FileRepository\ki125175.inf_amd64_4d74412f913cd0aa</value>
+         <value>bin=C:\Program Files\Java\jre1.8.0_60\bin</value>
+        </item>
+        <item>
+         <value>bin=C:\Program Files (x86)\IntelSWTools\system_trace\bin</value>
         </item>
         <item>
          <value>bin=C:\Program Files (x86)\IntelSWTools\OpenCL\sdk\bin\x64</value>
@@ -211,6 +214,12 @@ PATH=;%PATH%</launch_app.environment>
         </item>
         <item>
          <value>bin=C:\Program Files\NVIDIA Corporation\Nsight Compute 2019.1</value>
+        </item>
+        <item>
+         <value>bin=C:\Python27</value>
+        </item>
+        <item>
+         <value>bin=C:\Intel\DAL_1.1905.602.110</value>
         </item>
         <item>
          <value>bin=C:\Users\JP\AppData\Local\Microsoft\WindowsApps</value>
