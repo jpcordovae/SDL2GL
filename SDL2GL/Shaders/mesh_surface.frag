@@ -28,5 +28,5 @@ void main()
 		//float diffuseContribution=max(0.0,dot(normal,surf2light));
 		//float specularContribution=pow(max(0.0,dot(reflection,surf2light)),4.0);
 		//color = vec4(ambientColor*outColor+diffuseContribution *diffuseColor*outColor+ specularContribution*specularColor,1.0);
-		color = vec4(ambientColor,0.5);
+		color = vec4(ambientColor,0.25);
 }

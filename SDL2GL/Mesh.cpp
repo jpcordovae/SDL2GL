@@ -15,7 +15,7 @@ void Mesh::SetMeshData(std::vector<stVertexData> *vd, std::vector<unsigned int>*
 	indices = *id;
 	
 	GLCall(glCreateBuffers(1, &VBO));
-	GLCall(glNamedBufferStorage(VBO, data.size() * sizeof(stVertexData), data.data(), 0));
+	GLCall(glNamedBufferStorage(VBO, data.size() * sizeof(stVertexData), data.data(), GL_DYNAMIC_STORAGE_BIT));
 
 	GLCall(glCreateBuffers(1, &IND));
 	GLCall(glNamedBufferStorage(IND, indices.size() * sizeof(unsigned int), indices.data(), 0));

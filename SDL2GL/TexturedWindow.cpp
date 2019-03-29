@@ -71,6 +71,7 @@ void TexturedWindow::Init()
 	{
 		throw gl_shader_exception("error creating shader!!!");
 	}
+	
 	//
 	// print out some info about the graphics drivers
 	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
@@ -94,6 +95,7 @@ void TexturedWindow::Init()
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 	sdlCamera->Location(glm::vec3(0.0f, 0.0f, 8.0f));
+
 }
 
 TexturedWindow::~TexturedWindow()

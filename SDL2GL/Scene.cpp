@@ -155,7 +155,7 @@ void Scene::processMesh(aiMesh* mesh, const aiScene* scene)
 	scene->mMaterials[mesh->mMaterialIndex]->Get(AI_MATKEY_NAME, matName);
 	materialPtr mtl = materials_db[std::string(matName.C_Str())];
 	meshes.push_back(meshPtr(new Mesh(&data, &indices, mtl )));
-
+	meshes[meshes.size() - 1]->SetDisplayType(Mesh::RAW_TRIANGLES);
 }
 
 bool Scene::existMaterial(std::string &matName)
