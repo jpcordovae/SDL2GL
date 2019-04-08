@@ -45,7 +45,6 @@ public:
 	Mesh() {}
 	~Mesh();
 	void draw(unsigned int programId);
-	void update_vertices(std::vector<stVertexData> &new_vertices);
 	void SetDisplayType(mesh_display md);
 private:
 	typedef struct {

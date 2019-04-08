@@ -46,15 +46,23 @@ TetahedraWindow::TetahedraWindow(int argc, char **argv)
 		throw gl_shader_exception("error creating shader!!!");
 	}
 
-	std::vector<stVertexData> vertex_db;
 	stVertexData vd;
-
+	a_vertex_db_0.resize(out.numberofpoints);
 	for (int i = 0; i < out.numberofpoints; i++)
 	{
-		vd.position = glm::vec3(out.pointlist[i * 3 + 0] - out.firstnumber, 
-								out.pointlist[i * 3 + 1] - out.firstnumber, 
-								out.pointlist[i * 3 + 2] - out.firstnumber);
+		arma::vec3 av;
+
+		vd.position = glm::vec3(out.pointlist[i * 3 + 0],
+			out.pointlist[i * 3 + 1],
+			out.pointlist[i * 3 + 2]);
+
 		vertex_db.push_back(vd);
+
+		av << out.pointlist[i * 3 + 0]
+			<< out.pointlist[i * 3 + 1]
+			<< out.pointlist[i * 3 + 2];
+
+		a_vertex_db_0[i] = av;
 	}
 	
 	std::vector<unsigned int> faceindex;
@@ -63,19 +71,24 @@ TetahedraWindow::TetahedraWindow(int argc, char **argv)
 
 	for (size_t i = 0; i < out.numberoftrifaces; i++)
 	{
-		faceindex.push_back((unsigned int)out.trifacelist[i * 3 + 0] - out.firstnumber);
-		faceindex.push_back((unsigned int)out.trifacelist[i * 3 + 1] - out.firstnumber);
-		faceindex.push_back((unsigned int)out.trifacelist[i * 3 + 2] - out.firstnumber);
+		size_t tmp1 = (unsigned int)out.trifacelist[i * 3 + 0] - out.firstnumber;
+		size_t tmp2 = (unsigned int)out.trifacelist[i * 3 + 1] - out.firstnumber;
+		size_t tmp3 = (unsigned int)out.trifacelist[i * 3 + 2] - out.firstnumber;
 
-		normTmp = glm::triangleNormal(vertex_db[out.trifacelist[i * 3 + 0] - out.firstnumber].position,
-									  vertex_db[out.trifacelist[i * 3 + 1] - out.firstnumber].position,
-									  vertex_db[out.trifacelist[i * 3 + 2] - out.firstnumber].position);
+		faceindex.push_back(tmp1);
+		faceindex.push_back(tmp2);
+		faceindex.push_back(tmp3);
+
+		normTmp = glm::triangleNormal(vertex_db[tmp1].position,
+									  vertex_db[tmp2].position,
+									  vertex_db[tmp3].position);
 
 		face_normals.push_back(normTmp);
 
-		vertex_db[out.trifacelist[i * 3 + 0] - out.firstnumber].normal += normTmp;
-		vertex_db[out.trifacelist[i * 3 + 1] - out.firstnumber].normal += normTmp;
-		vertex_db[out.trifacelist[i * 3 + 2] - out.firstnumber].normal += normTmp;
+		vertex_db[tmp1].normal += normTmp;
+		vertex_db[tmp2].normal += normTmp;
+		vertex_db[tmp3].normal += normTmp;
+
 	}
 
 	for (int i = 0; i < out.numberofpoints; i++)
@@ -84,36 +97,95 @@ TetahedraWindow::TetahedraWindow(int argc, char **argv)
 	}
 
 	std::vector<unsigned int> trindex;
+
 	for (size_t i = 0; i < out.numberoftetrahedra; i++)
 	{
-		trindex.push_back(out.tetrahedronlist[i * 4 + 0] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 1] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 1] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 2] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 2] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 0] - out.firstnumber);
+		unsigned int p0 = out.tetrahedronlist[i * 4 + 0] - out.firstnumber;
+		unsigned int p1 = out.tetrahedronlist[i * 4 + 1] - out.firstnumber;
+		unsigned int p2 = out.tetrahedronlist[i * 4 + 2] - out.firstnumber;
+		unsigned int p3 = out.tetrahedronlist[i * 4 + 3] - out.firstnumber;
 
-		trindex.push_back(out.tetrahedronlist[i * 4 + 1] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 2] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 2] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 3] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 3] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 1] - out.firstnumber);
+		// face A
+		trindex.push_back(p0);
+		trindex.push_back(p1);
+		trindex.push_back(p1);
+		trindex.push_back(p2);
+		trindex.push_back(p2);
+		trindex.push_back(p0);
+		// face B
+		trindex.push_back(p1);
+		trindex.push_back(p2);
+		trindex.push_back(p2);
+		trindex.push_back(p3);
+		trindex.push_back(p3);
+		trindex.push_back(p1);
+		// face C
+		trindex.push_back(p2);
+		trindex.push_back(p3);
+		trindex.push_back(p3);
+		trindex.push_back(p0);
+		trindex.push_back(p0);
+		trindex.push_back(p2);
+		// face D
+		trindex.push_back(p0);
+		trindex.push_back(p1);
+		trindex.push_back(p1);
+		trindex.push_back(p3);
+		trindex.push_back(p3);
+		trindex.push_back(p0);
 
-		trindex.push_back(out.tetrahedronlist[i * 4 + 2] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 3] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 3] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 0] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 0] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 2] - out.firstnumber);
+		tetahedra tet;
 
-		trindex.push_back(out.tetrahedronlist[i * 4 + 0] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 1] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 1] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 3] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 3] - out.firstnumber);
-		trindex.push_back(out.tetrahedronlist[i * 4 + 0] - out.firstnumber);
+		tet.vertices_index.push_back(p0);
+		tet.vertices_index.push_back(p1);
+		tet.vertices_index.push_back(p2);
+		tet.vertices_index.push_back(p3);
 
+		tet.vertices.push_back(a_vertex_db_0[p0]);
+		tet.vertices.push_back(a_vertex_db_0[p1]);
+		tet.vertices.push_back(a_vertex_db_0[p2]);
+		tet.vertices.push_back(a_vertex_db_0[p3]);
+		
+		tet.X.col(0) = a_vertex_db_0[p1] - a_vertex_db_0[p0];
+		tet.X.col(1) = a_vertex_db_0[p2] - a_vertex_db_0[p0];
+		tet.X.col(2) = a_vertex_db_0[p3] - a_vertex_db_0[p0];
+
+		tet.P = tet.X;
+
+		try
+		{ 
+			tet.X = arma::inv(tet.X);
+		}catch(std::exception &e)
+		{ 
+			std::cerr << e.what() << std::endl;
+			std::cout << "P:" << p0 << "," << p1 << "," << p2 << "," << p3 << std::endl;
+			tet.X.print("tet.X");
+			continue;
+		}
+
+		// faces index
+		std::vector<unsigned int> findex;
+		findex.push_back(p0);
+		findex.push_back(p1);
+		findex.push_back(p2);
+		tet.faces_index.push_back(findex);
+		findex.clear();
+		findex.push_back(p1);
+		findex.push_back(p2);
+		findex.push_back(p3);
+		tet.faces_index.push_back(findex);
+		findex.clear();
+		findex.push_back(p0);
+		findex.push_back(p2);
+		findex.push_back(p3);
+		tet.faces_index.push_back(findex);
+		findex.clear();
+		findex.push_back(p0);
+		findex.push_back(p1);
+		findex.push_back(p3);
+		tet.faces_index.push_back(findex);
+
+		a_tetahedra_db.push_back(tet);
 	}
 
 	tetamesh->SetMeshData(&vertex_db, &trindex);
@@ -136,39 +208,22 @@ TetahedraWindow::TetahedraWindow(int argc, char **argv)
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 	//TODO: fix this swap, must be a better way
+	InitSimulationData();
 	std::thread Sim(&TetahedraWindow::UpdateSimulation,this);
 	simulation_thread.swap(Sim);
 }
 
+void TetahedraWindow::Initialization()
+{
+	InitSimulationData();
+}
 
 void TetahedraWindow::InitSimulationData()
 {
-	vertex_db_0.resize(vertex_db.size());
-	vertex_db_1.resize(vertex_db.size());
-	vertex_db_0 = vertex_db;
-
-	std::vector<arma::mat33> X;
-	X.resize(out.numberoftetrahedra);
-	arma::mat33 Xi[4];
-	arma::vec3 Xi0;
-	arma::mat33 M;
-
-	for (size_t i = 0; i < out.numberoftetrahedra; i++)
-	{
-		for (size_t j = 1; j < 4; j++)
-		{
-			double i0 = out.pointlist[out.tetrahedronlist[i * 4 + j] + 0 - out.firstnumber] - out.pointlist[out.tetrahedronlist[i * 4 + 0] + 0 - out.firstnumber];
-			double i1 = out.pointlist[out.tetrahedronlist[i * 4 + j] + 1 - out.firstnumber] - out.pointlist[out.tetrahedronlist[i * 4 + 0] + 1 - out.firstnumber];
-			double i2 = out.pointlist[out.tetrahedronlist[i * 4 + j] + 2 - out.firstnumber] - out.pointlist[out.tetrahedronlist[i * 4 + 0] + 2 - out.firstnumber];
-
-			Xi0 << i0 << i1 << i2;
-			Xi[j - 1].col(j - 1) = Xi0;
-		}
-
-
-	}
-
-	vertex_db_0 = vertex_db;
+	/*a_vertex_db_0.resize(a_vertex_db.size());
+	a_vertex_db_1.resize(a_vertex_db.size());
+	
+	a_vertex_db_0 = a_vertex_db;*/
 }
 
 void TetahedraWindow::Draw(float _dtime)
@@ -199,6 +254,8 @@ void TetahedraWindow::Draw(float _dtime)
 	int programId=0;
 
 	glDepthMask(1);
+	GLCall(glEnable(GL_CULL_FACE));
+	GLCall(glCullFace(GL_FRONT)); 
 	tetShader->Use();
 	// copy asynchronic data
 	simulation_mutex.lock();
@@ -217,6 +274,7 @@ void TetahedraWindow::Draw(float _dtime)
 	tetamesh->draw(programId);
 	
 	glDepthMask(1);
+	GLCall(glDisable(GL_CULL_FACE));
 	tetSurfShader->Use();
 	programId = tetSurfShader->GetShaderProgram();
 	GLCall(glUniformMatrix4fv(glGetUniformLocation(programId, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(model)));
@@ -243,15 +301,34 @@ void TetahedraWindow::UpdateSimulation()
 	std::chrono::high_resolution_clock::time_point now;
 	std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 	double dt = 0;
-
+	double E = 0.5;
 	while (running) 
 	{
 		now = std::chrono::high_resolution_clock::now();
 		dt = std::chrono::duration_cast<std::chrono::microseconds>(now - t0).count() / 1000000.0f;
 		//update simulation
-		for (size_t i = 0; i < out.numberoftetrahedra; i++)
+		for (size_t i = 0; i < a_tetahedra_db.size(); i++)
 		{
-			// 
+			arma::mat33 P;
+
+			for (size_t j = 1; j < 4; j++)
+			{
+				P.col(j - 1) = a_tetahedra_db[i].vertices[j] - a_tetahedra_db[i].vertices[0];
+			}
+
+			arma::mat33 nabla_u = P - arma::eye(3, 3);
+			arma::mat33 epsilon = 0.5* (nabla_u+arma::trans(nabla_u)+ arma::trans(nabla_u)*nabla_u);
+			arma::mat33 sigma = E * epsilon;
+
+			for (size_t findex = 0; findex < a_tetahedra_db[i].faces_index.size(); findex++)
+			{
+				arma::vec3 pj0 = a_tetahedra_db[i].vertices[0];
+				arma::vec3 pj1 = a_tetahedra_db[i].vertices[1];
+				arma::vec3 pj2 = a_tetahedra_db[i].vertices[2];
+				arma::vec3 fface = sigma * arma::cross(pj1-pj0,pj2-pj0);
+				
+			}
+
 		}
 		//data copy
 
@@ -260,8 +337,8 @@ void TetahedraWindow::UpdateSimulation()
 		running = simulation_running;
 		simulation_mutex.unlock();
 
-		vertex_db_0.clear();
-		std::copy(vertex_db_1.begin(), vertex_db_1.end(), std::back_inserter(vertex_db_0));
+		a_vertex_db_0.clear();
+		std::copy(a_vertex_db_1.begin(), a_vertex_db_1.end(), std::back_inserter(a_vertex_db_0));
 	}
 }
 

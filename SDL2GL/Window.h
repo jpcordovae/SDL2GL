@@ -46,6 +46,7 @@ public:
 	unsigned int GetWindowWidth() { return wWidth; }
 	unsigned int GetWindowHeight() { return wHeight; }
 	bool Initialized() { return initialized; }
+	virtual void Initialization();
 protected:
 	cameraPtr sdlCamera;
 	bool IsInitialized() {

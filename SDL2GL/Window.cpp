@@ -54,9 +54,11 @@ Window::Window(const std::string &title, int x, int y, int width, int height)
 		throw gl_context_exception(SDL_GetError());
 	}
 	
-	sdlCamera = cameraPtr(new Camera(glm::vec3(0.0f, 0.0f, 8.0f)));
+	sdlCamera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 8.0f));
 
 	initialized = true;
+
+	Initialization();
 
 	windowsContainer.emplace_back(this); // add windows to the windows container managed by the aplication.
 }
@@ -69,7 +71,7 @@ Window::Window(const std::string &title, int width, int height)
 
 void Window::Draw(float _dTime)
 {
-	if (!this->initialized || !((bool)sdlCamera)) return;
+	if (!this->IsInitialized()) return;
 	SDL_Window * winTmp = this->GetSDLWindow();
 	SDL_GLContext winContext = this->GetSDLContext();
 	SDL_GL_MakeCurrent(winTmp, winContext);
@@ -282,6 +284,11 @@ void Window::EventHandler(SDL_Event e)
 	default:
 		break;
 	}
+}
+
+void Window::Initialization()
+{
+
 }
 
 Window::~Window()
