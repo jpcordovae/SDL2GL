@@ -48,6 +48,9 @@ TetahedraWindow::TetahedraWindow(int argc, char **argv)
 
 	stVertexData vd;
 	a_vertex_db_0.resize(out.numberofpoints);
+	a_vertices.resize(out.numberofpoints);
+	a_forces.resize(out.numberofpoints);
+	a_speed.resize(out.numberofpoints);
 	for (int i = 0; i < out.numberofpoints; i++)
 	{
 		arma::vec3 av;
@@ -63,6 +66,7 @@ TetahedraWindow::TetahedraWindow(int argc, char **argv)
 			<< out.pointlist[i * 3 + 2];
 
 		a_vertex_db_0[i] = av;
+		a_vertices[i] = av;
 	}
 	
 	std::vector<unsigned int> faceindex;
@@ -140,11 +144,6 @@ TetahedraWindow::TetahedraWindow(int argc, char **argv)
 		tet.vertices_index.push_back(p1);
 		tet.vertices_index.push_back(p2);
 		tet.vertices_index.push_back(p3);
-
-		tet.vertices.push_back(a_vertex_db_0[p0]);
-		tet.vertices.push_back(a_vertex_db_0[p1]);
-		tet.vertices.push_back(a_vertex_db_0[p2]);
-		tet.vertices.push_back(a_vertex_db_0[p3]);
 		
 		tet.X.col(0) = a_vertex_db_0[p1] - a_vertex_db_0[p0];
 		tet.X.col(1) = a_vertex_db_0[p2] - a_vertex_db_0[p0];
@@ -300,8 +299,11 @@ void TetahedraWindow::UpdateSimulation()
 	simulation_mutex.unlock();
 	std::chrono::high_resolution_clock::time_point now;
 	std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
-	double dt = 0;
+	double dt = 0; // [s]
 	double E = 0.5;
+	arma::vec3 fg(arma::fill::zeros);
+	fg.at(1) = -9.8f; // [m*s^2]
+	double m = 0.1f; //[Kg]
 	while (running) 
 	{
 		now = std::chrono::high_resolution_clock::now();
@@ -313,7 +315,7 @@ void TetahedraWindow::UpdateSimulation()
 
 			for (size_t j = 1; j < 4; j++)
 			{
-				P.col(j - 1) = a_tetahedra_db[i].vertices[j] - a_tetahedra_db[i].vertices[0];
+				P.col(j - 1) = a_vertices[a_tetahedra_db[i].vertices_index[j]] - a_vertices[a_tetahedra_db[i].vertices_index[0]];
 			}
 
 			arma::mat33 nabla_u = P - arma::eye(3, 3);
@@ -322,23 +324,40 @@ void TetahedraWindow::UpdateSimulation()
 
 			for (size_t findex = 0; findex < a_tetahedra_db[i].faces_index.size(); findex++)
 			{
-				arma::vec3 pj0 = a_tetahedra_db[i].vertices[0];
-				arma::vec3 pj1 = a_tetahedra_db[i].vertices[1];
-				arma::vec3 pj2 = a_tetahedra_db[i].vertices[2];
+				arma::vec3 pj0 = a_vertices[a_tetahedra_db[i].vertices_index[0]];
+				arma::vec3 pj1 = a_vertices[a_tetahedra_db[i].vertices_index[1]];
+				arma::vec3 pj2 = a_vertices[a_tetahedra_db[i].vertices_index[2]];
 				arma::vec3 fface = sigma * arma::cross(pj1-pj0,pj2-pj0);
-				
+				a_forces[a_tetahedra_db[i].vertices_index[0]] = fg + (1 / 3.0f)*fface;
 			}
-
 		}
-		//data copy
+		
+		for (size_t k = 0; k < a_speed.size(); k++)
+		{
+			a_speed[k] += dt * a_forces[k] / m;
+			a_vertices[k] += dt * a_speed[k];
+		}
 
+		//data copy
+		a_vertex_db_0.clear();
+		std::copy(a_vertex_db_1.begin(), a_vertex_db_1.end(), std::back_inserter(a_vertex_db_0));
+		
 		//update VAO
+		tetamesh->vertex_mutex.lock();
+		for ( size_t k=0; k<vertex_db.size(); k++)
+		{
+			vertex_db[k].position.x = a_vertices[k][0];
+			vertex_db[k].position.y = a_vertices[k][1];
+			vertex_db[k].position.z = a_vertices[k][2];
+		}
+		GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, ));
+		tetamesh->vertex_mutex.unlock();
+
+		// update simulation run
 		simulation_mutex.lock();
 		running = simulation_running;
 		simulation_mutex.unlock();
 
-		a_vertex_db_0.clear();
-		std::copy(a_vertex_db_1.begin(), a_vertex_db_1.end(), std::back_inserter(a_vertex_db_0));
 	}
 }
 

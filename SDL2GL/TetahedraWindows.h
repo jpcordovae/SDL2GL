@@ -25,7 +25,6 @@ class TetahedraWindow : protected Window
 public:
 
 	typedef struct tetahedra {
-		std::vector<arma::vec3> vertices;
 		std::vector<arma::vec3> forces; // forces over vertices
 		std::vector<unsigned int> vertices_index;
 		std::vector<unsigned int> forces_index;
@@ -56,6 +55,7 @@ private:
 	bool simulation_running;
 	std::vector<arma::vec3> a_vertices;
 	std::vector<arma::vec3> a_forces;
+	std::vector<arma::vec3> a_speed;
 	std::vector<tetahedra> a_tetahedra_db;
 	std::vector<arma::vec3> a_vertex_db_0; // n 
 	std::vector<arma::vec3> a_vertex_db_1; // n + 1

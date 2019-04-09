@@ -6,6 +6,7 @@
 #include <memory>
 #include "Texture.h"
 #include "Material.h"
+#include <mutex>
 
 struct stVertexData {
 	stVertexData() :position(glm::vec3(0.0f,0.0f,0.0f)),
@@ -44,6 +45,7 @@ public:
 	void SetMeshData(std::vector<stVertexData> *vd, std::vector<unsigned int>*id);
 	Mesh() {}
 	~Mesh();
+	std::mutex vertex_mutex;
 	void draw(unsigned int programId);
 	void SetDisplayType(mesh_display md);
 private:
