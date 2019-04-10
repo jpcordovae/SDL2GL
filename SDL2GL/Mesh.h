@@ -48,6 +48,7 @@ public:
 	std::mutex vertex_mutex;
 	void draw(unsigned int programId);
 	void SetDisplayType(mesh_display md);
+	unsigned int VBO;
 private:
 	typedef struct {
 		GLuint texture_index;
@@ -60,7 +61,6 @@ private:
 	std::vector<unsigned int> indices;
 	Material m_mat;
 	unsigned int VAO;
-	unsigned int VBO;
 	unsigned int IND;
 };
 

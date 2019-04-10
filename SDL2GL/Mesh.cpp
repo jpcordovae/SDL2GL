@@ -70,6 +70,7 @@ void Mesh::draw(unsigned int programId)
 	GLCall(glUseProgram(programId));
 	GLint text_diffuse_loc;
 	GLuint id;
+	vertex_mutex.lock();
 	switch (display_type)
 	{
 	case DIFFUSE_COLOR:
@@ -94,7 +95,7 @@ void Mesh::draw(unsigned int programId)
 		GLCall(glDrawElements(GL_LINES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0));
 		break;
 	};
-	
+	vertex_mutex.unlock();
 	//GLCall(glDrawElements(GL_LINES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0));
 
 	GLCall(glBindVertexArray(0u));

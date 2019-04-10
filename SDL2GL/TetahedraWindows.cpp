@@ -207,14 +207,17 @@ TetahedraWindow::TetahedraWindow(int argc, char **argv)
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 	//TODO: fix this swap, must be a better way
+	simulation_running = false;
 	InitSimulationData();
 	std::thread Sim(&TetahedraWindow::UpdateSimulation,this);
 	simulation_thread.swap(Sim);
+	Initialization();
 }
 
 void TetahedraWindow::Initialization()
 {
 	InitSimulationData();
+	simulation_running = true;
 }
 
 void TetahedraWindow::InitSimulationData()
@@ -304,6 +307,7 @@ void TetahedraWindow::UpdateSimulation()
 	arma::vec3 fg(arma::fill::zeros);
 	fg.at(1) = -9.8f; // [m*s^2]
 	double m = 0.1f; //[Kg]
+	while (!running) {};
 	while (running) 
 	{
 		now = std::chrono::high_resolution_clock::now();
@@ -315,10 +319,10 @@ void TetahedraWindow::UpdateSimulation()
 
 			for (size_t j = 1; j < 4; j++)
 			{
-				P.col(j - 1) = a_vertices[a_tetahedra_db[i].vertices_index[j]] - a_vertices[a_tetahedra_db[i].vertices_index[0]];
+				a_tetahedra_db[i].P.col(j - 1) = (a_vertices[a_tetahedra_db[i].vertices_index[j]] - a_vertices[a_tetahedra_db[i].vertices_index[0]]) * a_tetahedra_db[i].X;
 			}
 
-			arma::mat33 nabla_u = P - arma::eye(3, 3);
+			arma::mat33 nabla_u = a_tetahedra_db[i].P - arma::eye(3, 3);
 			arma::mat33 epsilon = 0.5* (nabla_u+arma::trans(nabla_u)+ arma::trans(nabla_u)*nabla_u);
 			arma::mat33 sigma = E * epsilon;
 
@@ -350,7 +354,7 @@ void TetahedraWindow::UpdateSimulation()
 			vertex_db[k].position.y = a_vertices[k][1];
 			vertex_db[k].position.z = a_vertices[k][2];
 		}
-		GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, ));
+		glNamedBufferSubData( tetamesh->VBO , 0x00 , sizeof(arma::vec3)*a_vertices.size()*3 , a_vertices.data() );
 		tetamesh->vertex_mutex.unlock();
 
 		// update simulation run
