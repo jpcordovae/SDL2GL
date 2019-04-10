@@ -53,6 +53,7 @@ private:
 	shaderPtr tetSurfShader;
 	// simulation stuffs
 	bool simulation_running;
+	std::vector<float> f_vertices;
 	std::vector<arma::vec3> a_vertices;
 	std::vector<arma::vec3> a_forces;
 	std::vector<arma::vec3> a_speed;

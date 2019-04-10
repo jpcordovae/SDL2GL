@@ -51,6 +51,7 @@ TetahedraWindow::TetahedraWindow(int argc, char **argv)
 	a_vertices.resize(out.numberofpoints);
 	a_forces.resize(out.numberofpoints);
 	a_speed.resize(out.numberofpoints);
+	f_vertices.resize(out.numberofpoints * 3);
 	for (int i = 0; i < out.numberofpoints; i++)
 	{
 		arma::vec3 av;
@@ -319,7 +320,7 @@ void TetahedraWindow::UpdateSimulation()
 
 			for (size_t j = 1; j < 4; j++)
 			{
-				a_tetahedra_db[i].P.col(j - 1) = (a_vertices[a_tetahedra_db[i].vertices_index[j]] - a_vertices[a_tetahedra_db[i].vertices_index[0]]) * a_tetahedra_db[i].X;
+				a_tetahedra_db[i].P.col(j - 1) = arma::trans(arma::trans((a_vertices[a_tetahedra_db[i].vertices_index[j]] - a_vertices[a_tetahedra_db[i].vertices_index[0]])) * a_tetahedra_db[i].X);
 			}
 
 			arma::mat33 nabla_u = a_tetahedra_db[i].P - arma::eye(3, 3);
@@ -332,7 +333,9 @@ void TetahedraWindow::UpdateSimulation()
 				arma::vec3 pj1 = a_vertices[a_tetahedra_db[i].vertices_index[1]];
 				arma::vec3 pj2 = a_vertices[a_tetahedra_db[i].vertices_index[2]];
 				arma::vec3 fface = sigma * arma::cross(pj1-pj0,pj2-pj0);
+
 				a_forces[a_tetahedra_db[i].vertices_index[0]] = fg + (1 / 3.0f)*fface;
+
 			}
 		}
 		
@@ -340,11 +343,12 @@ void TetahedraWindow::UpdateSimulation()
 		{
 			a_speed[k] += dt * a_forces[k] / m;
 			a_vertices[k] += dt * a_speed[k];
+
 		}
 
 		//data copy
-		a_vertex_db_0.clear();
-		std::copy(a_vertex_db_1.begin(), a_vertex_db_1.end(), std::back_inserter(a_vertex_db_0));
+		//a_vertex_db_0.clear();
+		//std::copy(a_vertex_db_1.begin(), a_vertex_db_1.end(), std::back_inserter(a_vertex_db_0));
 		
 		//update VAO
 		tetamesh->vertex_mutex.lock();
@@ -353,8 +357,12 @@ void TetahedraWindow::UpdateSimulation()
 			vertex_db[k].position.x = a_vertices[k][0];
 			vertex_db[k].position.y = a_vertices[k][1];
 			vertex_db[k].position.z = a_vertices[k][2];
+			f_vertices[k * 3 + 0] = a_vertices[k][0];
+			f_vertices[k * 3 + 1] = a_vertices[k][1];
+			f_vertices[k * 3 + 2] = a_vertices[k][2];
+
 		}
-		glNamedBufferSubData( tetamesh->VBO , 0x00 , sizeof(arma::vec3)*a_vertices.size()*3 , a_vertices.data() );
+		glNamedBufferSubData( tetamesh->VBO , 0x00 , sizeof(float)*f_vertices.size()*3 , a_vertices.data() );
 		tetamesh->vertex_mutex.unlock();
 
 		// update simulation run
