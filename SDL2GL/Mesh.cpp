@@ -67,7 +67,6 @@ void Mesh::SetDisplayType(mesh_display md)
 
 void Mesh::draw(unsigned int programId)
 {
-<<<<<<< HEAD
 	GLCall(glUseProgram(programId));
 	GLint text_diffuse_loc;
 	GLuint id;
@@ -75,17 +74,6 @@ void Mesh::draw(unsigned int programId)
 	switch (display_type)
 	{
 	case DIFFUSE_COLOR:
-=======
-	glUseProgram(programId);
-	GLint text_diffuse_loc = glGetUniformLocation(programId,"texture_diffuse");
-	glUniform1i(text_diffuse_loc,0);
-	glActiveTexture(GL_TEXTURE0 );
-	glBindTexture(GL_TEXTURE_2D, m_material->m_textures_diffuse->GetID());
-
-
-	GLCall(glBindVertexArray(VAO));
->>>>>>> d6e018d9a079e6a023cb6ebf876415c7fd2f747a
-
 		break;
 	case TEXTURED:
 		text_diffuse_loc = glGetUniformLocation(programId, "texture_diffuse");

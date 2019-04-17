@@ -77,35 +77,6 @@ void Window::Draw(float _dTime)
 	SDL_GL_MakeCurrent(winTmp, winContext);
 	glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 
-	/*
-	static float rotAngle = 0.0f;
-	//glm::mat4 model = glm::rotate(rotAngle+=0.01f,glm::vec3(0.0f,1.0f,0.0f));
-	glm::mat4 model = glm::rotate(rotAngle, glm::vec3(0.0f, 1.0f, 0.0f));
-	//sdlCamera->setLocation(glm::vec3(0.0f, 0.0f, 8.0f));
-	glm::mat4 view = glm::lookAt(sdlCamera->getVector(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 4.0, 0.0));
-	glm::mat4 projection = glm::perspective(45.0f, 1.0f * wWidth / wHeight, 0.1f, 10000.0f);
-	glm::mat4 modelView = view * model;
-	glm::mat4 modelViewProjectionMatrix = projection * view * model;
-	glm::mat3 normalMatrix = glm::mat3(modelView);
-
-	this->winShader->Use();
-	
-	int programId = this->winShader->GetShaderProgram();
-
-	GLCall(glUniformMatrix4fv(glGetUniformLocation(programId, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(model)));
-	GLCall(glUniformMatrix4fv(glGetUniformLocation(programId, "viewMatrix"), 1, GL_FALSE, glm::value_ptr(view)));
-	GLCall(glUniformMatrix4fv(glGetUniformLocation(programId, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projection)));
-	GLCall(glUniformMatrix4fv(glGetUniformLocation(programId, "modelViewMatrix"), 1, GL_FALSE, glm::value_ptr(modelView)));
-	GLCall(glUniformMatrix4fv(glGetUniformLocation(programId, "modelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(modelViewProjectionMatrix)));
-	GLCall(glUniformMatrix4fv(glGetUniformLocation(programId, "normalMatrix"), 1, GL_FALSE, glm::value_ptr(normalMatrix)));
-
-	GLCall(glUniform3f(glGetUniformLocation(programId, "cameraPosition"), sdlCamera->getLocation().x, sdlCamera->getLocation().y, sdlCamera->getLocation().z));
-	GLCall(glUniform3f(glGetUniformLocation(programId, "lightPos"), sdlCamera->getLocation().x, sdlCamera->getLocation().y, sdlCamera->getLocation().z));
-	
-	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-	
-	this->scene->Draw(this->winShader->GetShaderProgram());
-	*/
 
 	SDL_GL_SwapWindow(this->GetSDLWindow()); // swap buffers
 }
